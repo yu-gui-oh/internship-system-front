@@ -56,16 +56,16 @@ const SimpleAccordion: React.FC<ToggleProps> = ({toggle}) => {
           >
             <Title>Cadastros</Title>
           </Options>
-          <MinorLink to="">
+          <MinorLink to="/create/passenger">
             <Text>Cadastrar passageiro</Text>
           </MinorLink>
-          <MinorLink to="">
+          <MinorLink to="/create/driver">
             <Text>Cadastrar motorista</Text>
           </MinorLink>
-          <MinorLink to="">
+          <MinorLink to="/create/vehicle">
             <Text>Cadastrar veículo</Text>
           </MinorLink>
-          <MinorLink to="">
+          <MinorLink to="/create/destination">
             <Text>Cadastrar destino</Text>
           </MinorLink>
         </StyledAccordion>
