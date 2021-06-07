@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, BrowserRouter } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import Home from './pages/Home';
 import CreateDestination from './pages/Create/Destination';
@@ -9,13 +9,13 @@ import CreateVehicle from './pages/Create/Vehicle';
 
 const Routes = () => {
     return (
-        <BrowserRouter>
+        <Switch>
             <Route path="/" exact component={Home} />
-            <Route path="/create/destination" exact component={CreateDestination} />
-            <Route path="/create/driver" exact component={CreateDriver} />
-            <Route path="/create/passenger" exact component={CreatePassenger} />
-            <Route path="/create/vehicle" exact component={CreateVehicle} />
-        </BrowserRouter>
+            <Route path="/create/destination" component={CreateDestination} />
+            <Route path="/create/driver" component={CreateDriver} />
+            <Route path="/create/passenger" component={CreatePassenger} />
+            <Route path="/create/vehicle" component={CreateVehicle} />
+        </Switch>
     );
 }
 

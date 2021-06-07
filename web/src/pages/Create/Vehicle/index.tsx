@@ -1,10 +1,17 @@
 import React from 'react';
 
+import {
+    Container,
+    Title,
+} from './styles';
+
 const CreateVehicle = () => {
     return(
-        <p>
-            papapapapapa
-        </p>
+        <Container>
+            <Title>
+                Cadastro de veículo:
+            </Title>
+        </Container>
     );
 }
 

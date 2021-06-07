@@ -1,10 +1,17 @@
 import React from 'react';
 
+import {
+    Container,
+    Title,
+} from './styles';
+
 const CreateDriver = () => {
     return(
-        <p>
-            ababababababa
-        </p>
+        <Container>
+            <Title>
+                Cadastro de motorista:
+            </Title>
+        </Container>
     );
 }
 
