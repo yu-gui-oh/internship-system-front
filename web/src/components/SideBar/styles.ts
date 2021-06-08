@@ -63,13 +63,13 @@ export const Logo = styled.div`
   }
 
   h1 {
-    color: #ffd;
+    color: #fff;
     font-weight: 200;
     font-size: 1.75rem;
 
     strong {
       word-break: break-all;
-      color: #ffd;
+      color: #fff;
       font-weight: 700;
     }
   }
@@ -77,15 +77,17 @@ export const Logo = styled.div`
 
 export const Title = styled.h1`
   font-size: 1rem;
-  color: #ffd;
+  color: #fff;
 `;
 
 export const Text = styled.h3`
   font-size: 16px;
   transition: all 0.2s;
 
+  color: #fff;
+
   &:hover {
-    color: #fff;
+    color: #322153;
     margin-left: 0.3rem;
   }
 `;
@@ -107,7 +109,7 @@ export const StyledAccordion = styled(Accordion)`
   box-shadow: none;
 
   > div {
-    background: #5b9aa0;
+    background: #2f9aa0;
   }
 `;
 
@@ -124,7 +126,7 @@ export const StyledLink = styled(Link)`
 
   padding-left: 15px;
 
-  color: #ffd;
+  color: #fff;
 
   svg {
     margin-right: 0.5rem;
@@ -145,7 +147,7 @@ export const MinorLink = styled(Link)`
 
   padding-left: 15px;
 
-  color: #ffd;
+  color: #fff;
 `;
 
 export const MyFiHome = styled(FiHome)`

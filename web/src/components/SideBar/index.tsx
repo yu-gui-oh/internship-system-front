@@ -40,7 +40,7 @@ const SimpleAccordion: React.FC<ToggleProps> = ({toggle}) => {
         </Logo> */}
         <StyledLink to="/">
           <MyFiHome />
-          Home
+          Início
         </StyledLink>
 
         <StyledLink to="/">

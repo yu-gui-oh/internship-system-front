@@ -38,8 +38,8 @@ const Content = styled.div<IToggleProps>`
 const Toggle = styled.button<IToggleProps>`
   position: fixed;
   top: 1rem;
-  margin-left: -1.5rem;
-  width: 3rem;
+  margin-left: -2rem;
+  width: 4rem;
   height: 4rem;
   border-radius: 0 50% 50% 0;
   z-index: 100;
