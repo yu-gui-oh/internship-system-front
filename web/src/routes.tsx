@@ -6,6 +6,7 @@ import CreateDestination from './pages/Create/Destination';
 import CreateDriver from './pages/Create/Driver';
 import CreatePassenger from './pages/Create/Passenger';
 import CreateVehicle from './pages/Create/Vehicle';
+import CreateTravel from './pages/Create/Travel';
 
 const Routes = () => {
     return (
@@ -15,6 +16,7 @@ const Routes = () => {
             <Route path="/create/driver" component={CreateDriver} />
             <Route path="/create/passenger" component={CreatePassenger} />
             <Route path="/create/vehicle" component={CreateVehicle} />
+            <Route path="/create/travel" component={CreateTravel} />
         </Switch>
     );
 }
