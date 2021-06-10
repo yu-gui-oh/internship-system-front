@@ -87,21 +87,11 @@ const CreateTravel = () => {
         { value: 'Finalizada', label: 'Finalizada' },
     ];
 
-    // useEffect(() => {
-    //     api.get('/vehicles').then(response => {
-    //         const vehicles = response.data.map( (vehicle: IVehicle) => ({
-    //             value: String(vehicle.id),
-    //             label: String(vehicle.vehicle),
-    //         }));
-    //         setVehicleOpt(vehicles);
-    //     })
-    // },[]);
-
     useEffect(() => {
         async function loadVehicles(): Promise<void> {
             await api.get('/vehicles').then(response =>{
                 const vehicles = response.data.map( (vehicle: IVehicle) => ({
-                    value: String(vehicle.id),
+                    value: "vehicle_" + String(vehicle.id),
                     label: String(vehicle.vehicle),
                 }));
                 setVehicleOpt(vehicles);
@@ -110,7 +100,7 @@ const CreateTravel = () => {
         async function loadDestinations(): Promise<void> {
             await api.get('/destinations').then(response =>{
                 const destinations = response.data.map( (destination: IDestination) => ({
-                    value: String(destination.id),
+                    value: "destination_" + String(destination.id),
                     label: String(destination.destination),
                 }));
                 setDestinationOpt(destinations);
@@ -119,14 +109,10 @@ const CreateTravel = () => {
         async function loadDrivers(): Promise<void> {
             await api.get('/drivers').then(response =>{
                 const drivers = response.data.map( (driver: IDriver) => ({
-                    value: String(driver.id),
+                    value: "driver_" + String(driver.id),
                     label: String(driver.name),
                 }));
-                setDriverOpt(drivers); 
-                // setDriverOpt(response.data.map( (driver: IDriver) => ({
-                //     value: driver.id,
-                //     label: driver.driver,
-                // })));
+                setDriverOpt(drivers);
             });
             
         }
@@ -151,13 +137,20 @@ const CreateTravel = () => {
                     return_date: Yup.date().required('Informe a data de retorno'),
                     return_hour: Yup.string().required('Informe a hora de retorno'),
                     daily_payout: Yup.number().required('Informe o valor da diária'),
-                    absent_hours: Yup.number(),
+                    absent_hours: Yup.number().nullable(),
                     status: Yup.string().required('Informe o status da viagem'),
                     total_seats: Yup.number().required('Informe o total de assentos do carro'),
                     booked_seats: Yup.number().required('Informe o total de assentos reservados do carro'),
                     vacant_seats: Yup.number().required('Informe o total de assentos vagos do carro'),
                     observation: Yup.string(),
                 });
+
+                let newVehicleId = String(data.vehicle.split("_").pop());
+                data.vehicle = newVehicleId;
+                let newDriverId = String(data.driver.split("_").pop());
+                data.driver = newDriverId;
+                let newDestinationID = String(data.destination.split("_").pop());
+                data.destination = newDestinationID;
 
                 await schema.validate(data, {
                     abortEarly: false,
@@ -239,6 +232,7 @@ const CreateTravel = () => {
                                 name="daily_payout" 
                                 label="Valor da diária (em R$)" 
                                 type="number" 
+                                step=".01"
                             />
                         </div>
                         <div style={{width: '45%'}}>

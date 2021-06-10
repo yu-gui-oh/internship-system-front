@@ -7,6 +7,7 @@ import CreateDriver from './pages/Create/Driver';
 import CreatePassenger from './pages/Create/Passenger';
 import CreateVehicle from './pages/Create/Vehicle';
 import CreateTravel from './pages/Create/Travel';
+import ListActiveTravels from './pages/List/ActiveTravels';
 
 const Routes = () => {
     return (
@@ -17,6 +18,8 @@ const Routes = () => {
             <Route path="/create/passenger" component={CreatePassenger} />
             <Route path="/create/vehicle" component={CreateVehicle} />
             <Route path="/create/travel" component={CreateTravel} />
+
+            <Route path="/list/travels/active" component={ListActiveTravels} />
         </Switch>
     );
 }

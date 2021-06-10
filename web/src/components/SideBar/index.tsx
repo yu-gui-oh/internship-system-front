@@ -18,6 +18,7 @@ import {
   MyFiHome,
   MyFiClock,
   MyFiLogout,
+  MyFiAirplay,
 } from './styles';
 // import Header from '../Header';
 
@@ -46,6 +47,11 @@ const SimpleAccordion: React.FC<ToggleProps> = ({toggle}) => {
         <StyledLink to="/create/travel">
           <MyFiClock />
           Agendar viagem
+        </StyledLink>
+
+        <StyledLink to="/list/travels/active">
+          <MyFiAirplay />
+          Viagens em andamento
         </StyledLink>
 
         <StyledAccordion square>

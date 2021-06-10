@@ -1,22 +1,21 @@
 import styled from  'styled-components';
 
+import Table from '@material-ui/core/Table';
+import { FiSearch } from 'react-icons/fi';
+
+import Button from '../../../components/Button';
+
 import { Form as Unform } from '@unform/web';
 
-export const Form = styled(Unform)`
-    width: 70%;
-
-    display: flex;
-    flex-direction: column;
+export const MyTable = styled(Table)`
+    width: 100%;
 `;
 
-export const ColumnDiv = styled.div`
+export const Form = styled(Unform)`
     width: 100%;
 
     display: flex;
-    flex-direction: row;
-
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
 `;
 
 export const MainDiv = styled.div`
@@ -37,7 +36,7 @@ export const Container = styled.div`
 `;
 
 export const FormContainer = styled.div`
-    height: 80rem;
+    min-height: 20rem;
     width: 50%;
 
     border-radius: 1rem;
@@ -50,7 +49,8 @@ export const FormContainer = styled.div`
     align-items: flex-start;
 
     padding: 2rem;
-    padding-top: 2rem;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
     margin: 0 auto;
 `;
 
@@ -67,4 +67,14 @@ export const Input = styled.input`
     padding: 16px 24px;
     font-size: 16px;
     color: #6C6C80;
+`;
+
+export const MyButton = styled(Button)`
+    margin-top: 0;
+`;
+
+export const MyFiSearch = styled(FiSearch)`
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
 `;
