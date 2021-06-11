@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
-import { FiHome, FiClock, FiLogOut, FiAirplay } from 'react-icons/fi';
+import { FiHome, FiClock, FiLogOut, FiAirplay, FiPlus } from 'react-icons/fi';
 
 interface IContentProps {
   toggle: boolean;
@@ -166,3 +166,6 @@ export const MyFiAirplay = styled(FiAirplay)`
   color: #fff;
 `;
 
+export const MyFiPlus = styled(FiPlus)`
+  color: #fff;
+`;

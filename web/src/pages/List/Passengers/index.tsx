@@ -29,40 +29,36 @@ import {
     MyButton,
 } from './styles';
 
-interface ITravels {
+interface IPassengers {
     id: string;
-    departure_date: Date;
-    destination: string;
-    driver: string;
-    vehicle: string;
-    vacant_seats: number;
-    status: string;
+    name: string;
+    birth_date: Date;
+    cell_phone: string;
+    rg: string;
 };
 
-const ListActiveTravels = () => {
+const ListActivePassengers = () => {
     // const history = useHistory();
 
-    const [travels, setTravels] = useState<ITravels[]>([]);
+    const [passengers, setPassengers] = useState<IPassengers[]>([]);
 
     const formRef = useRef<FormHandles>(null);
 
     useEffect(() => {
-        async function loadTravels(): Promise<void> {
-            await api.get('/travels/active')
+        async function loadPassengers(): Promise<void> {
+            await api.get('/list/passengers')
             .then( response => {
-                const travels = response.data.map( ( travel: ITravels ) => ({
-                    id: travel.id,
-                    departure_date: travel.departure_date,
-                    destination: travel.destination,
-                    driver: travel.driver,
-                    vehicle: travel.vehicle,
-                    vacant_seats: travel.vacant_seats,
-                    status: travel.status,
+                const passengers = response.data.map( ( passenger: IPassengers ) => ({
+                    id: passenger.id,
+                    name: passenger.name,
+                    birth_date: passenger.birth_date,
+                    cell_phone: passenger.cell_phone,
+                    rg: passenger.rg,
                 }) );
-                setTravels(travels);
+                setPassengers(passengers);
             });
         };
-        loadTravels();
+        loadPassengers();
     }, []);
 
     const handleSubmit = React.useCallback(
@@ -78,7 +74,7 @@ const ListActiveTravels = () => {
         <MainDiv>
             <Container>
                 <Title>
-                    Viagens em andamento:
+                    Passageiros:
                 </Title>
 
                 
@@ -90,31 +86,27 @@ const ListActiveTravels = () => {
                     <MyTable>
                         <TableHead>
                             <TableRow>
-                                <TableCell align="center" > Data da viagem </TableCell>
-                                <TableCell align="center" > Destino </TableCell>
-                                <TableCell align="center" > Motorista </TableCell>
-                                <TableCell align="center" > Veículo </TableCell>
-                                <TableCell align="center" > Assentos vagos </TableCell>
+                                <TableCell align="center" > Nome </TableCell>
+                                <TableCell align="center" > Data de nascimento </TableCell>
+                                <TableCell align="center" > RG </TableCell>
+                                <TableCell align="center" > Celular </TableCell>
                                 <TableCell align="center" > Detalhes </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                        {travels.map( (travel: ITravels) => (
-                            <TableRow key={travel.id}>
+                        {passengers.map( (passenger: IPassengers) => (
+                            <TableRow key={passenger.id}>
                                 <TableCell align="center" >
-                                    {new Date(travel.departure_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
+                                    {passenger.name}
                                 </TableCell>
                                 <TableCell align="center" >
-                                    {travel.destination}
+                                    {new Date(passenger.birth_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
+                                </TableCell>                                
+                                <TableCell align="center" >
+                                    {passenger.rg}
                                 </TableCell>
                                 <TableCell align="center" >
-                                    {travel.driver}
-                                </TableCell>
-                                <TableCell align="center" >
-                                    {travel.vehicle}
-                                </TableCell>
-                                <TableCell align="center" >
-                                    {travel.vacant_seats}
+                                    {passenger.cell_phone}
                                 </TableCell>
                                 <TableCell align="center" >
                                     <MyButton type="submit">
@@ -133,4 +125,4 @@ const ListActiveTravels = () => {
     );
 }
 
-export default ListActiveTravels;
+export default ListActivePassengers;

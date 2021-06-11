@@ -40,8 +40,9 @@ export const FormContainer = styled.div`
     align-items: flex-start;
 
     padding: 2rem;
-    padding-top: 5rem;
+    padding-top: 4rem;
     margin: 0 auto;
+    margin-bottom: 1rem;
 `;
 
 export const Title = styled.h1`

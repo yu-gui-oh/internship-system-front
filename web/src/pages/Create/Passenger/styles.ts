@@ -52,6 +52,7 @@ export const FormContainer = styled.div`
     padding: 2rem;
     padding-top: 2rem;
     margin: 0 auto;
+    margin-bottom: 1rem;
 `;
 
 export const Title = styled.h1`

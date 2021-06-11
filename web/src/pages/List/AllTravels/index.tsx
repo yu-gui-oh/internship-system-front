@@ -35,7 +35,6 @@ interface ITravels {
     destination: string;
     driver: string;
     vehicle: string;
-    vacant_seats: number;
     status: string;
 };
 
@@ -48,7 +47,7 @@ const ListActiveTravels = () => {
 
     useEffect(() => {
         async function loadTravels(): Promise<void> {
-            await api.get('/travels/active')
+            await api.get('/list/travels')
             .then( response => {
                 const travels = response.data.map( ( travel: ITravels ) => ({
                     id: travel.id,
@@ -56,7 +55,6 @@ const ListActiveTravels = () => {
                     destination: travel.destination,
                     driver: travel.driver,
                     vehicle: travel.vehicle,
-                    vacant_seats: travel.vacant_seats,
                     status: travel.status,
                 }) );
                 setTravels(travels);
@@ -78,7 +76,7 @@ const ListActiveTravels = () => {
         <MainDiv>
             <Container>
                 <Title>
-                    Viagens em andamento:
+                    Histórico de viagens:
                 </Title>
 
                 
@@ -94,7 +92,7 @@ const ListActiveTravels = () => {
                                 <TableCell align="center" > Destino </TableCell>
                                 <TableCell align="center" > Motorista </TableCell>
                                 <TableCell align="center" > Veículo </TableCell>
-                                <TableCell align="center" > Assentos vagos </TableCell>
+                                <TableCell align="center" > Status </TableCell>
                                 <TableCell align="center" > Detalhes </TableCell>
                             </TableRow>
                         </TableHead>
@@ -114,7 +112,7 @@ const ListActiveTravels = () => {
                                     {travel.vehicle}
                                 </TableCell>
                                 <TableCell align="center" >
-                                    {travel.vacant_seats}
+                                    {travel.status}
                                 </TableCell>
                                 <TableCell align="center" >
                                     <MyButton type="submit">

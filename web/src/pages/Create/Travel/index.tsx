@@ -2,7 +2,8 @@ import React, {
     useRef, 
     useCallback,
     useEffect,
-    useState, 
+    useState,
+    ChangeEvent, 
 } from 'react';
 
 import * as Yup from 'yup';
@@ -81,6 +82,7 @@ const CreateTravel = () => {
     const [vehicleOpt, setVehicleOpt] = useState<IVehicleOpt[]>([]);
     const [destinationOpt, setDestinationOpt] = useState<IDestinationOpt[]>([]);
     const [driverOpt, setDriverOpt] = useState<IDriverOpt[]>([]);
+    const [absentHours, setAbsentHours] = useState(0);
 
     const StatusOptions =[
         { value: 'Andamento', label: 'Andamento' },
@@ -145,6 +147,7 @@ const CreateTravel = () => {
                     observation: Yup.string(),
                 });
 
+                data.absent_hours = absentHours;
                 let newVehicleId = String(data.vehicle.split("_").pop());
                 data.vehicle = newVehicleId;
                 let newDriverId = String(data.driver.split("_").pop());
@@ -166,14 +169,23 @@ const CreateTravel = () => {
         }, 
         [
             history,
+            absentHours,
         ]
     );
+
+    const handleAbsentHours = (event: ChangeEvent<HTMLInputElement>) => {
+        if ( event.target.value === "" ){
+            setAbsentHours(0);
+        } else {
+            setAbsentHours(parseInt(event.target.value));
+        }
+    }
 
     return(
         <MainDiv>
             <Container>
                 <Title>
-                    Agendamento de viagem:
+                    Cadastro de viagem:
                 </Title>
             </Container>
             <FormContainer>
@@ -240,6 +252,8 @@ const CreateTravel = () => {
                                 name="absent_hours" 
                                 label="Horas ausentes (se houver)" 
                                 type="number"
+                                placeholder="0"
+                                onChange={event => handleAbsentHours(event)}
                             />
                         </div>
                     </ColumnDiv>

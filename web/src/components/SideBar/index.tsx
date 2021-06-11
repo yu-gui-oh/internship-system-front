@@ -19,6 +19,7 @@ import {
   MyFiClock,
   MyFiLogout,
   MyFiAirplay,
+  MyFiPlus,
 } from './styles';
 // import Header from '../Header';
 
@@ -45,8 +46,13 @@ const SimpleAccordion: React.FC<ToggleProps> = ({toggle}) => {
         </StyledLink>
 
         <StyledLink to="/create/travel">
+          <MyFiPlus />
+          Nova viagem
+        </StyledLink>
+
+        <StyledLink to="/">
           <MyFiClock />
-          Agendar viagem
+          Agendamento
         </StyledLink>
 
         <StyledLink to="/list/travels/active">
@@ -54,7 +60,7 @@ const SimpleAccordion: React.FC<ToggleProps> = ({toggle}) => {
           Viagens em andamento
         </StyledLink>
 
-        <StyledAccordion square>
+        <StyledAccordion square defaultExpanded>
           <Options
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
@@ -76,7 +82,7 @@ const SimpleAccordion: React.FC<ToggleProps> = ({toggle}) => {
           </MinorLink>
         </StyledAccordion>
 
-        <StyledAccordion square>
+        <StyledAccordion square defaultExpanded>
           <Options
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel2a-content"
@@ -84,20 +90,20 @@ const SimpleAccordion: React.FC<ToggleProps> = ({toggle}) => {
           >
             <Title>Listar</Title>
           </Options>
-          <MinorLink to="">
+          <MinorLink to="/list/passengers">
             <Text>Listar passageiros</Text>
           </MinorLink>
-          <MinorLink to="">
+          <MinorLink to="/list/drivers">
             <Text>Listar motoristas</Text>
           </MinorLink>
-          <MinorLink to="">
+          <MinorLink to="/list/vehicles">
             <Text>Listar veículos</Text>
           </MinorLink>
-          <MinorLink to="">
+          <MinorLink to="/list/travels">
             <Text>Listar viagens</Text>
           </MinorLink>
-          <MinorLink to="">
-            <Text>Listar empresa</Text>
+          <MinorLink to="/company/details">
+            <Text>Detalhes da empresa</Text>
           </MinorLink>
         </StyledAccordion>
 
