@@ -3,7 +3,6 @@ import React, {
     useCallback,
     useEffect,
     useState,
-    ChangeEvent, 
 } from 'react';
 
 import * as Yup from 'yup';
@@ -24,7 +23,6 @@ import {
     FormContainer,
     Title,
     ColumnDiv,
-    // Input,
 } from './styles';
 
 interface ICompany {
@@ -40,10 +38,18 @@ interface ICompany {
     phone: string;
 }
 
-const CreatePassenger = () => {
+const ShowCompany = () => {
     const history = useHistory();
 
-    const [company, setCompany] = useState<ICompany[]>([]);
+    const [name, setName] = useState("");
+    const [address, setAddress] = useState("");
+    const [neighbourhood, setNeighbourhood] = useState("");
+    const [cep, setCep] = useState("");
+    const [city, setCity] = useState("");
+    const [uf, setUf] = useState("");
+    const [statualInscription, setStatualInscription] = useState("");
+    const [cnpj, setCnpj] = useState("");
+    const [phone, setPhone] = useState("");
 
     const formRef = useRef<FormHandles>(null);
 
@@ -92,7 +98,18 @@ const CreatePassenger = () => {
                     cnpj: company.cnpj,
                     phone: company.phone,
                 }));
-                setCompany(company);
+
+                company.forEach((company: ICompany) => {
+                    setName(company.name);
+                    setAddress(company.address);
+                    setNeighbourhood(company.neighbourhood);
+                    setCep(company.cep);
+                    setCity(company.city);
+                    setUf(company.uf);
+                    setStatualInscription(company.statual_inscription);
+                    setCnpj(company.cnpj);
+                    setPhone(company.phone);
+                });
             });
         }
         loadCompany();
@@ -132,10 +149,6 @@ const CreatePassenger = () => {
         ]
     );
 
-    // const handleValueChange = (event: ChangeEvent<HTMLInputElement>) => {
-    //     this.setState({value: e.target.value});
-    // }
-
     return(
         <MainDiv>
             <Container>
@@ -145,45 +158,47 @@ const CreatePassenger = () => {
             </Container>
             <FormContainer>
                 <Form ref={formRef} onSubmit={handleSubmit} >
-                    {
-                        company?.map( company => (
                             <div>
                                 <Input 
                                     name="name" 
                                     label="Nome" 
-                                    value={company?.name}
-                                    // onChange={event => handleValueChange(event)}
+                                    value={name}
+                                    onChange={event => setName(event.target.value)}
                                 />
                                 <Input 
                                     name="address" 
                                     label="Endereço" 
-                                    value={company?.address} 
+                                    value={address}
+                                    onChange={event => setAddress(event.target.value)}
                                 />
                                 <Input 
                                     name="neighbourhood" 
                                     label="Bairro" 
-                                    value={company?.neighbourhood}
+                                    value={neighbourhood}
+                                    onChange={event => setNeighbourhood(event.target.value)}
                                 />
                                 <ColumnDiv>
                                     <div style={{width: '30%'}}>
                                         <Input 
                                             name="cep" 
                                             label="CEP" 
-                                            value={company?.cep}
+                                            value={cep}
+                                            onChange={event => setCep(event.target.value)}
                                         />
                                     </div>
                                     <div style={{width: '30%'}}>
                                         <Input 
                                             name="city" 
                                             label="Cidade" 
-                                            value={company?.city}
+                                            value={city}
+                                            onChange={event => setCity(event.target.value)}
                                         />
                                     </div>
                                     <div style={{width: '30%'}}>
                                         <Select 
                                             name="uf"
                                             options={UFOptions}
-                                            defaultOption={company?.uf}
+                                            defaultOption={uf}
                                             label="UF"
                                         />
                                     </div>
@@ -191,27 +206,28 @@ const CreatePassenger = () => {
                                 <Input 
                                     name="statual_inscription" 
                                     label="Inscrição estadual" 
-                                    value={company?.statual_inscription}
+                                    value={statualInscription}
+                                    onChange={event => setStatualInscription(event.target.value)}
                                 />
                                 <ColumnDiv>
                                     <div style={{width: '45%'}}>
                                         <Input 
                                             name="cnpj" 
                                             label="CNPJ" 
-                                            value={company?.cnpj}
+                                            value={cnpj}
+                                            onChange={event => setCnpj(event.target.value)}
                                         />
                                     </div>
                                     <div style={{width: '45%'}}>
                                         <Input 
                                             name="phone" 
                                             label="Telefone" 
-                                            value={company?.phone}
+                                            value={phone}
+                                            onChange={event => setPhone(event.target.value)}
                                         />
                                     </div>
                                 </ColumnDiv>
                             </div>
-                        ))
-                    }
                     <Button type="submit">Salvar</Button>
                 </Form>
             </FormContainer>
@@ -219,4 +235,4 @@ const CreatePassenger = () => {
     );
 }
 
-export default CreatePassenger;
+export default ShowCompany;

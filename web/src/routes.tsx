@@ -15,6 +15,7 @@ import ListAllTravels from './pages/List/AllTravels';
 import ListPassengers from './pages/List/Passengers';
 
 import ShowCompany from './pages/Show/Company';
+import ShowPassenger from './pages/Show/Passenger';
 
 const Routes = () => {
     return (
@@ -33,6 +34,7 @@ const Routes = () => {
             <Route path="/list/passengers" component={ListPassengers} />
 
             <Route path="/company/details" component={ShowCompany} />
+            <Route path="/edit/passenger" component={ShowPassenger} />
         </Switch>
     );
 }

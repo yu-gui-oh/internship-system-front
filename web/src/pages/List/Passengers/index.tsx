@@ -1,16 +1,16 @@
 import React, { 
-    useRef, 
+    // useRef, 
     // useCallback,
     useEffect,
     useState,
 } from 'react';
 
 // import * as Yup from 'yup';
-import { FormHandles } from '@unform/core';
+// import { FormHandles } from '@unform/core';
 
 import api from '../../../services/api';
 
-// import { useHistory } from 'react-router';
+import { useHistory } from 'react-router';
 
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -19,7 +19,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import {
-    Form,
+    // Form,
     MainDiv,
     Container,
     FormContainer,
@@ -33,16 +33,16 @@ interface IPassengers {
     id: string;
     name: string;
     birth_date: Date;
-    cell_phone: string;
+    cell_phone: string; 
     rg: string;
 };
 
 const ListActivePassengers = () => {
-    // const history = useHistory();
+    const history = useHistory();
 
     const [passengers, setPassengers] = useState<IPassengers[]>([]);
 
-    const formRef = useRef<FormHandles>(null);
+    // const formRef = useRef<FormHandles>(null);
 
     useEffect(() => {
         async function loadPassengers(): Promise<void> {
@@ -61,12 +61,22 @@ const ListActivePassengers = () => {
         loadPassengers();
     }, []);
 
-    const handleSubmit = React.useCallback(
+    // const handleSubmit = React.useCallback(
+    //     (id: string) => {
+    //     //   history.push('/', id);
+    //     },
+    //     [
+    //         // history
+    //     ],
+    //   );
+
+      const goToEdit = React.useCallback(
         (id: string) => {
-        //   history.push('/', id);
+            localStorage.setItem('passenger_id', id);
+            history.push('/edit/passenger');
         },
         [
-            // history
+            history
         ],
       );
 
@@ -80,7 +90,7 @@ const ListActivePassengers = () => {
                 
             </Container>
             <FormContainer>
-                <Form ref={formRef} onSubmit={handleSubmit} >
+                {/* <Form ref={formRef} onSubmit={handleSubmit} > */}
 
                 <TableContainer>
                     <MyTable>
@@ -109,7 +119,7 @@ const ListActivePassengers = () => {
                                     {passenger.cell_phone}
                                 </TableCell>
                                 <TableCell align="center" >
-                                    <MyButton type="submit">
+                                    <MyButton type="submit" onClick={() => goToEdit(passenger.id)}>
                                         <MyFiSearch />
                                     </MyButton>
                                 </TableCell>
@@ -118,7 +128,7 @@ const ListActivePassengers = () => {
                         </TableBody>
                     </MyTable>
                 </TableContainer>
-                </Form>
+                {/* </Form> */}
                
             </FormContainer>
         </MainDiv>
