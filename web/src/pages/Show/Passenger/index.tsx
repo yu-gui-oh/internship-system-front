@@ -3,7 +3,6 @@ import React, {
     useCallback,
     useEffect,
     useState,
-    ChangeEvent,
 } from 'react';
 
 import * as Yup from 'yup';
@@ -55,7 +54,7 @@ const ShowPassenger = () => {
     const [cpf, setCpf] = useState("");
     const [rg, setRg] = useState("");
     const [issuingBody, setIssuingBody] = useState("");
-    const [birthDate, setBirthDate] = useState(new Date());
+    const [birthDate, setBirthDate] = useState("");
     const [number, setNumber] = useState("");
     const [complement, setComplement] = useState("");
     const [cellPhone, setCellPhone] = useState("");
@@ -66,6 +65,8 @@ const ShowPassenger = () => {
     const [city, setCity] = useState("");
     const [uf, setUf] = useState("");
     const [phone, setPhone] = useState("");
+
+    const [editDate, setEditDate] = useState(false);
 
     const formRef = useRef<FormHandles>(null);
 
@@ -148,6 +149,10 @@ const ShowPassenger = () => {
 
                 data.status = true;
 
+                if ( editDate === false ) {
+                    data.birth_date = new Date(birthDate);
+                }
+
                 await schema.validate(data, {
                     abortEarly: false,
                 });
@@ -163,19 +168,10 @@ const ShowPassenger = () => {
         [
             history,
             passenger_id,
+            birthDate,
+            editDate,
         ]
     );
-
-    // const handleChangeDate = useCallback( async (event: ChangeEvent<HTMLInputElement>) => {
-    //     if ( event.target.value < '1000-01-01' ) {
-            
-    //     } else {
-    //         setBirthDate(new Date(event.target.value));
-    //     }
-
-    // },[
-
-    // ]);
 
     return(
         <MainDiv>
@@ -210,22 +206,29 @@ const ShowPassenger = () => {
                         value={issuingBody}
                         onChange={event => setIssuingBody(event.target.value)}
                     />
-                    <Input 
-                        name="birth_date" 
-                        label="Data de nascimento" 
-                        type="date"
-                        // value={new Date(birthDate)
-                        //     .toLocaleDateString('en-CA', { 
-                        //         year: 'numeric', 
-                        //         month: '2-digit', 
-                        //         day: '2-digit', 
-                        //         timeZone: 'UTC'
-                        //     })
-                        // }
-                        value={new Date(birthDate).toLocaleDateString('en-CA')}
-                        onChange={event => setBirthDate(new Date(event.target.value))}
-                        // onChange={event => handleChangeDate(event)}
-                    />
+                    <ColumnDiv>
+                        { editDate === false ?
+                            <div style={{width: '100%'}}>
+                                <Input 
+                                    name="birth_date" 
+                                    label="Data de nascimento" 
+                                    type="date"
+                                    value={String(birthDate)}
+                                    readOnly
+                                    onClick={() => setEditDate(true)}
+                                />
+                            </div>
+                        :
+                            <div style={{width: '100%'}}>
+                                <Input 
+                                    name="birth_date" 
+                                    label="Data de nascimento" 
+                                    type="date"
+                                    autoFocus
+                                />
+                            </div>
+                        }
+                    </ ColumnDiv>
                     <Input 
                         name="cep" 
                         label="CEP" 

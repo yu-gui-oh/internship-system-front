@@ -1,16 +1,16 @@
 import React, { 
-    useRef, 
+    // useRef, 
     // useCallback,
     useEffect,
     useState,
 } from 'react';
 
 // import * as Yup from 'yup';
-import { FormHandles } from '@unform/core';
+// import { FormHandles } from '@unform/core';
 
 import api from '../../../services/api';
 
-// import { useHistory } from 'react-router';
+import { useHistory } from 'react-router';
 
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -19,7 +19,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import {
-    Form,
+    // Form,
     MainDiv,
     Container,
     FormContainer,
@@ -38,11 +38,11 @@ interface IDrivers {
 }
 
 const ListActiveDrivers = () => {
-    // const history = useHistory();
+    const history = useHistory();
 
     const [drivers, setDrivers] = useState<IDrivers[]>([]);
 
-    const formRef = useRef<FormHandles>(null);
+    // const formRef = useRef<FormHandles>(null);
 
     useEffect(() => {
         async function loadDrivers(): Promise<void> {
@@ -61,12 +61,13 @@ const ListActiveDrivers = () => {
         loadDrivers();
     }, []);
 
-    const handleSubmit = React.useCallback(
+    const goToEdit = React.useCallback(
         (id: string) => {
-        //   history.push('/', id);
+            localStorage.setItem('driver_id', id);
+            history.push('/edit/driver');
         },
         [
-            // history
+            history
         ],
       );
 
@@ -80,7 +81,7 @@ const ListActiveDrivers = () => {
                 
             </Container>
             <FormContainer>
-                <Form ref={formRef} onSubmit={handleSubmit} >
+                {/* <Form ref={formRef} onSubmit={handleSubmit} > */}
 
                 <TableContainer>
                     <MyTable>
@@ -109,7 +110,7 @@ const ListActiveDrivers = () => {
                                     {driver.cel_phone}
                                 </TableCell>
                                 <TableCell align="center" >
-                                    <MyButton type="submit">
+                                    <MyButton type="submit" onClick={() => goToEdit(driver.id)}>
                                         <MyFiSearch />
                                     </MyButton>
                                 </TableCell>
@@ -118,7 +119,7 @@ const ListActiveDrivers = () => {
                         </TableBody>
                     </MyTable>
                 </TableContainer>
-                </Form>
+                {/* </Form> */}
                
             </FormContainer>
         </MainDiv>

@@ -1,16 +1,16 @@
 import React, { 
-    useRef, 
+    // useRef, 
     // useCallback,
     useEffect,
     useState,
 } from 'react';
 
 // import * as Yup from 'yup';
-import { FormHandles } from '@unform/core';
+// import { FormHandles } from '@unform/core';
 
 import api from '../../../services/api';
 
-// import { useHistory } from 'react-router';
+import { useHistory } from 'react-router';
 
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -19,7 +19,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import {
-    Form,
+    // Form,
     MainDiv,
     Container,
     FormContainer,
@@ -38,11 +38,11 @@ interface IVehicles {
 }
 
 const ListActivevehicles = () => {
-    // const history = useHistory();
+    const history = useHistory();
 
     const [vehicles, setVehicles] = useState<IVehicles[]>([]);
 
-    const formRef = useRef<FormHandles>(null);
+    // const formRef = useRef<FormHandles>(null);
 
     useEffect(() => {
         async function loadVehicles(): Promise<void> {
@@ -61,12 +61,22 @@ const ListActivevehicles = () => {
         loadVehicles();
     }, []);
 
-    const handleSubmit = React.useCallback(
+    // const handleSubmit = React.useCallback(
+    //     (id: string) => {
+    //     //   history.push('/', id);
+    //     },
+    //     [
+    //         // history
+    //     ],
+    //   );
+
+      const goToEdit = React.useCallback(
         (id: string) => {
-        //   history.push('/', id);
+            localStorage.setItem('vehicle_id', id);
+            history.push('/edit/vehicle');
         },
         [
-            // history
+            history
         ],
       );
 
@@ -80,7 +90,7 @@ const ListActivevehicles = () => {
                 
             </Container>
             <FormContainer>
-                <Form ref={formRef} onSubmit={handleSubmit} >
+                {/* <Form ref={formRef} onSubmit={handleSubmit} > */}
 
                 <TableContainer>
                     <MyTable>
@@ -109,7 +119,7 @@ const ListActivevehicles = () => {
                                 {new Date(vehicle.due_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
                                 </TableCell>
                                 <TableCell align="center" >
-                                    <MyButton type="submit">
+                                    <MyButton type="submit" onClick={() => goToEdit(vehicle.id)}>
                                         <MyFiSearch />
                                     </MyButton>
                                 </TableCell>
@@ -118,7 +128,7 @@ const ListActivevehicles = () => {
                         </TableBody>
                     </MyTable>
                 </TableContainer>
-                </Form>
+                {/* </Form> */}
                
             </FormContainer>
         </MainDiv>
