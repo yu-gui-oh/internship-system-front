@@ -1,0 +1,375 @@
+import React, { 
+    useRef, 
+    useCallback,
+    useEffect,
+    useState,
+    ChangeEvent, 
+} from 'react';
+
+import * as Yup from 'yup';
+import { FormHandles } from '@unform/core';
+
+import api from '../../../services/api';
+
+import { useHistory } from 'react-router';
+
+import Input from '../../../components/Input';
+import Select from '../../../components/Select';
+import Button from '../../../components/Button';
+
+import {
+    Form,
+    MainDiv,
+    Container,
+    FormContainer,
+    Title,
+    ColumnDiv,
+    // Input,
+} from './styles';
+
+interface IVehicle {
+    id: string;
+    vehicle: string;
+}
+
+interface IVehicleOpt {
+    value: string;
+    label: string;
+}
+
+interface IDestination {
+    id: string;
+    destination: string;
+}
+
+interface IDestinationOpt {
+    value: string;
+    label: string;
+}
+
+interface IDriver {
+    id: string;
+    name: string;
+}
+
+interface IDriverOpt {
+    value: string;
+    label: string;
+}
+
+interface ICreateTravel {
+    id: string;
+    departure_date: Date;
+    departure_hour: string;
+    destination: string;
+    vehicle: string;
+    driver: string;
+    return_date: Date;
+    return_hour: string;
+    daily_payout: number;
+    absent_hours: number;
+    status: string;
+    observation: string;
+    total_seats: number;
+    booked_seats: number;
+    vacant_seats: number;
+};
+
+const CreateTravel = () => {
+    const history = useHistory();
+
+    const travel_id = localStorage.getItem('travel_id');
+
+    const [readOnlyStatus, setReadOnlyStatus] = useState(false);
+    
+    const [departureDate, setDepartureDate] = useState("");
+    const [departureHour, setDepartureHour] = useState("");
+    const [destination, setDestination] = useState("");
+    const [vehicle, setVehicle] = useState("");
+    const [driver, setDriver] = useState("");
+    const [returnDate, setReturnDate] = useState("");
+    const [returnHour, setReturnHour] = useState("");
+    const [dailyPayout, setDailyPayout] = useState(0);
+    const [absentHours, setAbsentHours] = useState(0);
+    const [status, setStatus] = useState("");
+    const [observation, setObservation] = useState("");
+    const [totalSeats, setTotalSeats] = useState(0);
+    const [bookedSeats, setBookedSeats] = useState(0);
+    const [vacantSeats, setVacantSeats] = useState(0);
+
+
+    const formRef = useRef<FormHandles>(null);
+
+    const [vehicleOpt, setVehicleOpt] = useState<IVehicleOpt[]>([]);
+    const [destinationOpt, setDestinationOpt] = useState<IDestinationOpt[]>([]);
+    const [driverOpt, setDriverOpt] = useState<IDriverOpt[]>([]);
+
+    const StatusOptions =[
+        { value: 'Andamento', label: 'Andamento' },
+        { value: 'Finalizada', label: 'Finalizada' },
+        { value: 'Cancelada', label: 'Cancelada' },
+    ];
+
+    useEffect(() => {
+        async function loadVehicles(): Promise<void> {
+            await api.get('/vehicles').then(response =>{
+                const vehicles = response.data.map( (vehicle: IVehicle) => ({
+                    value: "vehicle_" + String(vehicle.id),
+                    label: String(vehicle.vehicle),
+                }));
+                setVehicleOpt(vehicles);
+            });
+        }
+        async function loadDestinations(): Promise<void> {
+            await api.get('/destinations').then(response =>{
+                const destinations = response.data.map( (destination: IDestination) => ({
+                    value: "destination_" + String(destination.id),
+                    label: String(destination.destination),
+                }));
+                setDestinationOpt(destinations);
+            });
+        }
+        async function loadDrivers(): Promise<void> {
+            await api.get('/drivers').then(response =>{
+                const drivers = response.data.map( (driver: IDriver) => ({
+                    value: "driver_" + String(driver.id),
+                    label: String(driver.name),
+                }));
+                setDriverOpt(drivers);
+            });
+        }
+
+        async function loadTravel(): Promise<void> {
+            await api.get(`/travels/${travel_id}`).then(response =>{
+                    setDepartureDate(response.data.departure_date);
+                    setDepartureHour(response.data.departure_hour);
+                    setDestination(response.data.destination);
+                    setVehicle(response.data.vehicle);
+                    setDriver(response.data.driver);
+                    setReturnDate(response.data.return_date);
+                    setReturnHour(response.data.return_hour);
+                    setDailyPayout(response.data.daily_payout);
+                    setAbsentHours(response.data.absent_hours);
+                    setStatus(response.data.status);
+                    setObservation(response.data.observation);
+                    setTotalSeats(response.data.total_seats);
+                    setBookedSeats(response.data.booked_seats);
+                    setVacantSeats(response.data.vacant_seats);
+
+                    if (response.data.status !== 'Andamento') {
+                        setReadOnlyStatus(true);
+                    }
+                });
+        }
+        
+        loadTravel();
+        loadVehicles(); 
+        loadDestinations();
+        loadDrivers();
+
+    }, [travel_id]);
+
+    const handleSubmit = useCallback(
+        async (data: ICreateTravel) => {
+            try {
+                formRef.current!.setErrors({});
+
+                const schema = Yup.object().shape({
+                    departure_date: Yup.date().required('Informe a data de partida'),
+                    departure_hour: Yup.string().required('Informe a hora de partida'),
+                    destination: Yup.string().required('Informe o destino'),
+                    vehicle: Yup.string().required('Informe o veículo'),
+                    driver: Yup.date().required('Informe o motorista'),
+                    return_date: Yup.date().required('Informe a data de retorno'),
+                    return_hour: Yup.string().required('Informe a hora de retorno'),
+                    daily_payout: Yup.number().required('Informe o valor da diária'),
+                    absent_hours: Yup.number().nullable(),
+                    status: Yup.string().required('Informe o status da viagem'),
+                    total_seats: Yup.number().required('Informe o total de assentos do carro'),
+                    booked_seats: Yup.number().required('Informe o total de assentos reservados do carro'),
+                    vacant_seats: Yup.number().required('Informe o total de assentos vagos do carro'),
+                    observation: Yup.string(),
+                });
+
+                data.absent_hours = absentHours;
+                let newVehicleId = String(data.vehicle.split("_").pop());
+                data.vehicle = newVehicleId;
+                let newDriverId = String(data.driver.split("_").pop());
+                data.driver = newDriverId;
+                let newDestinationID = String(data.destination.split("_").pop());
+                data.destination = newDestinationID;
+
+                await schema.validate(data, {
+                    abortEarly: false,
+                });
+
+                await api.post(`/edit/travel/${travel_id}`, data);
+
+                alert('Viagem editada com sucesso!');
+                history.push('/list/travels');
+            } catch (err) {
+                alert('Houve um erro ao editar viagem. Verifique se todos os campos foram preenchidos corretamente.');
+            }
+        }, 
+        [
+            history,
+            absentHours,
+            travel_id
+        ]
+    );
+
+    const handleAbsentHours = (event: ChangeEvent<HTMLInputElement>) => {
+        if ( event.target.value === "" ){
+            setAbsentHours(0);
+        } else {
+            setAbsentHours(parseInt(event.target.value));
+        }
+    }
+
+    return(
+        <MainDiv>
+            <Container>
+                <Title>
+                    Cadastro de viagem:
+                </Title>
+            </Container>
+            <FormContainer>
+                <Form ref={formRef} onSubmit={handleSubmit} >
+                    <ColumnDiv>
+                        <div style={{width: '45%'}}>
+                            <Input 
+                                name="departure_date" 
+                                label="Data de partida" 
+                                type="date"
+                                value={String(departureDate) || ''}
+                                onChange={event => setDepartureDate(event.target.value)}
+                                readOnly={readOnlyStatus}
+                            />
+                        </div>
+                        <div style={{width: '45%'}}>
+                            <Input 
+                                name="departure_hour" 
+                                label="Hora de partida" 
+                                type="time"
+                                value={departureHour}
+                                onChange={event => setDepartureHour(event.target.value)}
+                                readOnly={readOnlyStatus}
+                            />
+                        </div>
+                    </ColumnDiv>
+                    <Select 
+                        name="destination"
+                        options={destinationOpt}
+                        label="Destino"
+                        defaultOption={destination}
+                        readOnly={readOnlyStatus}
+                    />
+                    <Select 
+                        name="vehicle"
+                        options={vehicleOpt}
+                        label="Veículo"
+                        defaultOption={vehicle}
+                        readOnly={readOnlyStatus}
+                    />
+                    <Select 
+                        name="driver"
+                        options={driverOpt}
+                        label="Motorista"
+                        defaultOption={driver}
+                        readOnly={readOnlyStatus}
+                    />
+                    <ColumnDiv>
+                        <div style={{width: '45%'}}>
+                            <Input 
+                                name="return_date" 
+                                label="Data de retorno" 
+                                type="date"
+                                value={String(returnDate) || ''}
+                                onChange={event => setReturnDate(event.target.value)}
+                                readOnly={readOnlyStatus}
+                            />
+                        </div>
+                        <div style={{width: '45%'}}>
+                            <Input 
+                                name="return_hour" 
+                                label="Hora de retorno" 
+                                type="time"
+                                value={returnHour}
+                                onChange={event => setReturnHour(event.target.value)}
+                                readOnly={readOnlyStatus}
+                            />
+                        </div>
+                    </ColumnDiv>
+
+                    <ColumnDiv>
+                        <div style={{width: '45%'}}>
+                            <Input 
+                                name="daily_payout" 
+                                label="Valor da diária (em R$)" 
+                                type="number" 
+                                step=".01"
+                                value={dailyPayout}
+                                onChange={event => setDailyPayout(parseInt(event.target.value))}
+                                // readOnly={readOnlyStatus}
+                            />
+                        </div>
+                        <div style={{width: '45%'}}>
+                            <Input 
+                                name="absent_hours" 
+                                label="Horas ausentes (se houver)" 
+                                type="number"
+                                placeholder="0"
+                                onChange={event => handleAbsentHours(event)}
+                                readOnly={readOnlyStatus}
+                            />
+                        </div>
+                    </ColumnDiv>
+                    <Select 
+                        name="status"
+                        options={StatusOptions}
+                        defaultOption={status}
+                        label="Status da viagem"
+                        readOnly={readOnlyStatus}
+                    />                    
+                    <Input 
+                        name="total_seats" 
+                        label="Total de assentos do carro" 
+                        type="number"
+                        value={totalSeats}
+                        onChange={event => setTotalSeats(parseInt(event.target.value))}
+                        readOnly
+                    />
+                    <Input 
+                        name="booked_seats" 
+                        label="Total de assentos reservados" 
+                        type="number"
+                        value={bookedSeats}
+                        onChange={event => setBookedSeats(parseInt(event.target.value))}
+                        readOnly
+                        
+                    />
+                    <Input 
+                        name="vacant_seats" 
+                        label="Total de assentos vagos" 
+                        type="number"
+                        value={vacantSeats}
+                        onChange={event => setVacantSeats(parseInt(event.target.value))}
+                        readOnly
+                    />
+
+                    <Input 
+                        name="observation" 
+                        label="Observação" 
+                        placeholder="Observações sobre a viagem" 
+                        value={observation}
+                        onChange={event => setObservation(event.target.value)}
+                        readOnly={readOnlyStatus}
+                    />
+                    <Button type="submit">Salvar</Button>
+                </Form>
+            </FormContainer>
+        </MainDiv>
+    );
+}
+
+export default CreateTravel;

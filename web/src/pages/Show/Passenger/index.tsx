@@ -66,8 +66,6 @@ const ShowPassenger = () => {
     const [uf, setUf] = useState("");
     const [phone, setPhone] = useState("");
 
-    const [editDate, setEditDate] = useState(false);
-
     const formRef = useRef<FormHandles>(null);
 
     const UFOptions =[
@@ -149,10 +147,6 @@ const ShowPassenger = () => {
 
                 data.status = true;
 
-                if ( editDate === false ) {
-                    data.birth_date = new Date(birthDate);
-                }
-
                 await schema.validate(data, {
                     abortEarly: false,
                 });
@@ -167,9 +161,7 @@ const ShowPassenger = () => {
         }, 
         [
             history,
-            passenger_id,
-            birthDate,
-            editDate,
+            passenger_id, 
         ]
     );
 
@@ -206,29 +198,13 @@ const ShowPassenger = () => {
                         value={issuingBody}
                         onChange={event => setIssuingBody(event.target.value)}
                     />
-                    <ColumnDiv>
-                        { editDate === false ?
-                            <div style={{width: '100%'}}>
-                                <Input 
-                                    name="birth_date" 
-                                    label="Data de nascimento" 
-                                    type="date"
-                                    value={String(birthDate)}
-                                    readOnly
-                                    onClick={() => setEditDate(true)}
-                                />
-                            </div>
-                        :
-                            <div style={{width: '100%'}}>
-                                <Input 
-                                    name="birth_date" 
-                                    label="Data de nascimento" 
-                                    type="date"
-                                    autoFocus
-                                />
-                            </div>
-                        }
-                    </ ColumnDiv>
+                    <Input 
+                        name="birth_date" 
+                        label="Data de nascimento" 
+                        type="date"
+                        value={String(birthDate) || ''}
+                        onChange={event => setBirthDate(event.target.value)}
+                    />
                     <Input 
                         name="cep" 
                         label="CEP" 

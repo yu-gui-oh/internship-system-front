@@ -22,8 +22,6 @@ import {
     Container,
     FormContainer,
     Title,
-    ColumnDiv,
-    // Input,
 } from './styles';
 
 interface IShowVehicle {
@@ -42,8 +40,6 @@ const ShowVehicle = () => {
     const [vehicle, setVehicle] = useState("");
     const [type, setType] = useState("");
     const [dueDate, setDueDate] = useState("");
-
-    const [editDate, setEditDate] = useState(false);
 
     const formRef = useRef<FormHandles>(null);
 
@@ -76,10 +72,6 @@ const ShowVehicle = () => {
                     due_date: Yup.date().required('Informe a data de vencimento da documentação do veículo'),
                 });
 
-                if ( editDate === false ) {
-                    data.due_date = new Date(dueDate);
-                }
-
                 await schema.validate(data, {
                     abortEarly: false,
                 });
@@ -94,8 +86,6 @@ const ShowVehicle = () => {
         }, 
         [
             history,
-            editDate,
-            dueDate,
             vehicle_id
         ]
     );
@@ -129,29 +119,13 @@ const ShowVehicle = () => {
                         defaultOption={type}
                         label="Informe o tipo do veículo"
                     />
-                    <ColumnDiv>
-                    { editDate === false ?
-                            <div style={{width: '100%'}}>
-                                <Input 
-                                    name="due_date" 
-                                    label="Vencimento da documentação" 
-                                    type="date"
-                                    value={String(dueDate)}
-                                    readOnly
-                                    onClick={() => setEditDate(true)}
-                                />
-                            </div>
-                        :
-                            <div style={{width: '100%'}}>
-                                <Input 
-                                    name="due_date" 
-                                    label="Vencimento da documentação" 
-                                    type="date"
-                                    autoFocus
-                                />
-                            </div>
-                        }
-                        </ColumnDiv>
+                    <Input 
+                        name="due_date" 
+                        label="Vencimento da documentação" 
+                        type="date"
+                        value={String(dueDate) || ''}
+                        onChange={event => setDueDate(event.target.value)}
+                    />
                     <Button type="submit">Salvar</Button>
                 </Form>
             </FormContainer>

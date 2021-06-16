@@ -18,6 +18,7 @@ import ShowCompany from './pages/Show/Company';
 import ShowPassenger from './pages/Show/Passenger';
 import ShowDriver from './pages/Show/Driver';
 import ShowVehicle from './pages/Show/Vehicle';
+import ShowTravel from './pages/Show/Travel';
 
 const Routes = () => {
     return (
@@ -39,6 +40,7 @@ const Routes = () => {
             <Route path="/edit/passenger" component={ShowPassenger} />
             <Route path="/edit/driver" component={ShowDriver} />
             <Route path="/edit/vehicle" component={ShowVehicle} />
+            <Route path="/edit/travel" component={ShowTravel} />
         </Switch>
     );
 }

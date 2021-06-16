@@ -1,7 +1,7 @@
 import styled from  'styled-components';
 
 import Table from '@material-ui/core/Table';
-import { FiSearch } from 'react-icons/fi';
+import { FiSearch, FiUsers } from 'react-icons/fi';
 
 import Button from '../../../components/Button';
 
@@ -37,7 +37,7 @@ export const Container = styled.div`
 
 export const FormContainer = styled.div`
     min-height: 20rem;
-    width: 50%;
+    width: 60%;
 
     border-radius: 1rem;
 
@@ -78,6 +78,12 @@ export const MyButton = styled(Button)`
 `;
 
 export const MyFiSearch = styled(FiSearch)`
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+`;
+
+export const MyFiUsers = styled(FiUsers)`
   color: #fff;
   font-size: 1.5rem;
   font-weight: bold;

@@ -1,16 +1,16 @@
 import React, { 
-    useRef, 
+    // useRef, 
     // useCallback,
     useEffect,
     useState,
 } from 'react';
 
 // import * as Yup from 'yup';
-import { FormHandles } from '@unform/core';
+// import { FormHandles } from '@unform/core';
 
 import api from '../../../services/api';
 
-// import { useHistory } from 'react-router';
+import { useHistory } from 'react-router';
 
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -19,13 +19,14 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import {
-    Form,
+    // Form,
     MainDiv,
     Container,
     FormContainer,
     Title,
     MyTable,
     MyFiSearch,
+    MyFiUsers,
     MyButton,
 } from './styles';
 
@@ -39,11 +40,11 @@ interface ITravels {
 };
 
 const ListActiveTravels = () => {
-    // const history = useHistory();
+    const history = useHistory();
 
     const [travels, setTravels] = useState<ITravels[]>([]);
 
-    const formRef = useRef<FormHandles>(null);
+    // const formRef = useRef<FormHandles>(null);
 
     useEffect(() => {
         async function loadTravels(): Promise<void> {
@@ -63,12 +64,13 @@ const ListActiveTravels = () => {
         loadTravels();
     }, []);
 
-    const handleSubmit = React.useCallback(
+    const goToEdit = React.useCallback(
         (id: string) => {
-        //   history.push('/', id);
+            localStorage.setItem('travel_id', id);
+            history.push('/edit/travel');
         },
         [
-            // history
+            history
         ],
       );
 
@@ -82,7 +84,7 @@ const ListActiveTravels = () => {
                 
             </Container>
             <FormContainer>
-                <Form ref={formRef} onSubmit={handleSubmit} >
+                {/* <Form ref={formRef} onSubmit={handleSubmit} > */}
 
                 <TableContainer>
                     <MyTable>
@@ -94,6 +96,7 @@ const ListActiveTravels = () => {
                                 <TableCell align="center" > Veículo </TableCell>
                                 <TableCell align="center" > Status </TableCell>
                                 <TableCell align="center" > Detalhes </TableCell>
+                                <TableCell align="center" > Passageiros na viagem </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -115,8 +118,13 @@ const ListActiveTravels = () => {
                                     {travel.status}
                                 </TableCell>
                                 <TableCell align="center" >
-                                    <MyButton type="submit">
+                                    <MyButton type="submit" onClick={() => goToEdit(travel.id)}>
                                         <MyFiSearch />
+                                    </MyButton>
+                                </TableCell>
+                                <TableCell align="center" >
+                                    <MyButton type="submit">
+                                        <MyFiUsers />
                                     </MyButton>
                                 </TableCell>
                             </TableRow>
@@ -124,7 +132,7 @@ const ListActiveTravels = () => {
                         </TableBody>
                     </MyTable>
                 </TableContainer>
-                </Form>
+                {/* </Form> */}
                
             </FormContainer>
         </MainDiv>
