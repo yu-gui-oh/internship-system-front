@@ -37,7 +37,7 @@ export const Container = styled.div`
 `;
 
 export const FormContainer = styled.div`
-    height: 80rem;
+    height: 82rem;
     width: 50%;
 
     border-radius: 1rem;

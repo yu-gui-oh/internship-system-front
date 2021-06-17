@@ -141,31 +141,31 @@ const CreateTravel = () => {
 
         async function loadTravel(): Promise<void> {
             await api.get(`/travels/${travel_id}`).then(response =>{
-                    setDepartureDate(response.data.departure_date);
-                    setDepartureHour(response.data.departure_hour);
-                    setDestination(response.data.destination);
-                    setVehicle(response.data.vehicle);
-                    setDriver(response.data.driver);
-                    setReturnDate(response.data.return_date);
-                    setReturnHour(response.data.return_hour);
-                    setDailyPayout(response.data.daily_payout);
-                    setAbsentHours(response.data.absent_hours);
-                    setStatus(response.data.status);
-                    setObservation(response.data.observation);
-                    setTotalSeats(response.data.total_seats);
-                    setBookedSeats(response.data.booked_seats);
-                    setVacantSeats(response.data.vacant_seats);
+                    setDepartureDate(response.data.travels.departure_date);
+                    setDepartureHour(response.data.travels.departure_hour);
+                    setDestination(String( "destination_" + response.data.travels.destination));
+                    setVehicle(String( "vehicle_" + response.data.travels.vehicle));
+                    setDriver(String( "driver_" + response.data.travels.driver));
+                    setReturnDate(response.data.travels.return_date);
+                    setReturnHour(response.data.travels.return_hour);
+                    setDailyPayout(response.data.travels.daily_payout);
+                    setAbsentHours(response.data.travels.absent_hours);
+                    setStatus(response.data.travels.status);
+                    setObservation(response.data.travels.observation);
+                    setTotalSeats(response.data.travels.total_seats);
+                    setBookedSeats(response.data.travels.booked_seats);
+                    setVacantSeats(response.data.travels.vacant_seats);
 
-                    if (response.data.status !== 'Andamento') {
+                    if (response.data.travels.status !== 'Andamento') {
                         setReadOnlyStatus(true);
                     }
                 });
         }
         
-        loadTravel();
         loadVehicles(); 
         loadDestinations();
         loadDrivers();
+        loadTravel();
 
     }, [travel_id]);
 
@@ -190,7 +190,7 @@ const CreateTravel = () => {
                     vacant_seats: Yup.number().required('Informe o total de assentos vagos do carro'),
                     observation: Yup.string(),
                 });
-
+                
                 data.absent_hours = absentHours;
                 let newVehicleId = String(data.vehicle.split("_").pop());
                 data.vehicle = newVehicleId;
@@ -198,6 +198,13 @@ const CreateTravel = () => {
                 data.driver = newDriverId;
                 let newDestinationID = String(data.destination.split("_").pop());
                 data.destination = newDestinationID;
+
+                let numberTotalSeats = Number(data.total_seats);
+                data.total_seats = numberTotalSeats;
+                let numberBookedSeats = Number(data.booked_seats);
+                data.booked_seats = numberBookedSeats;
+                let numberVacantSeats = Number(data.vacant_seats);
+                data.vacant_seats = numberVacantSeats;
 
                 await schema.validate(data, {
                     abortEarly: false,
@@ -225,6 +232,14 @@ const CreateTravel = () => {
             setAbsentHours(parseInt(event.target.value));
         }
     }
+
+    const goToLists = React.useCallback(() => {
+            history.push('/list/travels');
+        },
+        [
+            history
+        ],
+      );
 
     return(
         <MainDiv>
@@ -262,21 +277,21 @@ const CreateTravel = () => {
                         options={destinationOpt}
                         label="Destino"
                         defaultOption={destination}
-                        readOnly={readOnlyStatus}
+                        disabled={readOnlyStatus}
                     />
                     <Select 
                         name="vehicle"
                         options={vehicleOpt}
                         label="Veículo"
                         defaultOption={vehicle}
-                        readOnly={readOnlyStatus}
+                        disabled={readOnlyStatus}
                     />
                     <Select 
                         name="driver"
                         options={driverOpt}
                         label="Motorista"
                         defaultOption={driver}
-                        readOnly={readOnlyStatus}
+                        disabled={readOnlyStatus}
                     />
                     <ColumnDiv>
                         <div style={{width: '45%'}}>
@@ -310,7 +325,7 @@ const CreateTravel = () => {
                                 step=".01"
                                 value={dailyPayout}
                                 onChange={event => setDailyPayout(parseInt(event.target.value))}
-                                // readOnly={readOnlyStatus}
+                                readOnly={readOnlyStatus}
                             />
                         </div>
                         <div style={{width: '45%'}}>
@@ -329,7 +344,7 @@ const CreateTravel = () => {
                         options={StatusOptions}
                         defaultOption={status}
                         label="Status da viagem"
-                        readOnly={readOnlyStatus}
+                        disabled={readOnlyStatus}
                     />                    
                     <Input 
                         name="total_seats" 
@@ -365,7 +380,18 @@ const CreateTravel = () => {
                         onChange={event => setObservation(event.target.value)}
                         readOnly={readOnlyStatus}
                     />
-                    <Button type="submit">Salvar</Button>
+                    {
+                        readOnlyStatus === false ? 
+                            <Button type="submit">Salvar</Button>
+                        :
+                            <Button 
+                                onClick={() => goToLists()}
+                                style={{background: '#f74848'}}
+                            >
+                                Voltar
+                            </Button>
+                    }
+                    
                 </Form>
             </FormContainer>
         </MainDiv>
