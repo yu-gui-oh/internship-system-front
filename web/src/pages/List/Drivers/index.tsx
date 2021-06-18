@@ -46,7 +46,7 @@ const ListActiveDrivers = () => {
 
     const [drivers, setDrivers] = useState<IDrivers[]>([]);
 
-    const [reload, setReload] = useState(0)
+    const [reload, setReload] = useState(0);
     const [searchParams, setSearchParams] = useState("");
 
     const formRef = useRef<FormHandles>(null);
@@ -68,7 +68,7 @@ const ListActiveDrivers = () => {
         loadDrivers();
     }, [reload]);
 
-    const searchTravel = React.useCallback(() => {
+    const searchDriver = React.useCallback(() => {
         if ( searchParams ) {
            api.get(`/drivers/search/${searchParams}`).then( response => {
             const drivers = response.data.map( ( driver: IDrivers ) => ({
@@ -85,6 +85,15 @@ const ListActiveDrivers = () => {
         searchParams
     ]);
 
+    const clearSearch = React.useCallback(
+            () => {
+                setReload(reload + 1);
+            },
+            [
+                reload
+            ],
+        );
+
     const goToEdit = React.useCallback(
         (id: string) => {
             localStorage.setItem('driver_id', id);
@@ -94,33 +103,6 @@ const ListActiveDrivers = () => {
             history
         ],
       );
-   
-    const clearSearch = React.useCallback(
-        () => {
-            setReload(reload + 1);
-        },
-        [
-            reload
-        ],
-    );
-
-    //   const clearSearch = React.useCallback(
-    //     () => {
-    //         api.get('/list/drivers')
-    //         .then( response => {
-    //             const drivers = response.data.map( ( driver: IDrivers ) => ({
-    //                 id: driver.id,
-    //                 name: driver.name,
-    //                 cpf: driver.cpf,
-    //                 cnh: driver.cnh,
-    //                 cel_phone: driver.cel_phone,
-    //             }) );
-    //             setDrivers(drivers);
-    //         });
-    //     },
-    //     [
-    //     ],
-    //   );
 
     return(
         <MainDiv>
@@ -128,12 +110,10 @@ const ListActiveDrivers = () => {
                 <Title>
                     Motoristas:
                 </Title>
-
-                
             </Container>
 
             <SearchContainer>
-                <Form ref={formRef} onSubmit={searchTravel} >
+                <Form ref={formRef} onSubmit={searchDriver} >
                     <ColumnDiv>
                         <div style={{width: '50%'}}>
                             <Input 
@@ -143,8 +123,8 @@ const ListActiveDrivers = () => {
                             />
                         </div>
                         <div style={{width: '20%', marginTop: '3rem'}}>
-                            <MyButton onClick={() => searchTravel()}>
-                                <MyFiSearch />
+                            <MyButton onClick={() => searchDriver()}>
+                                <h4 style={{color: '#FFF'}}>Pesquisar</h4>
                             </MyButton>
                         </div>
                         <div style={{width: '20%', marginTop: '3rem'}}>
@@ -158,7 +138,6 @@ const ListActiveDrivers = () => {
 
             <FormContainer>
                 {/* <Form ref={formRef} onSubmit={handleSubmit} > */}
-
                 <TableContainer>
                     <MyTable>
                         <TableHead>

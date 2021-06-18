@@ -1,11 +1,11 @@
 import React, { 
     useRef, 
-    useCallback,
+    // useCallback,
     useEffect,
     useState,
 } from 'react';
 
-import * as Yup from 'yup';
+// import * as Yup from 'yup';
 import { FormHandles } from '@unform/core';
 
 import api from '../../../services/api';
@@ -34,9 +34,6 @@ import {
     MyButton,
 } from './styles';
 
-interface ISearchParam {
-    search_param: string;
-};
 interface ITravels {
     id: string;
     departure_date: Date;
@@ -52,6 +49,7 @@ const ListActiveTravels = () => {
 
     const [travels, setTravels] = useState<ITravels[]>([]);
 
+    const [reload, setReload] = useState(0);
     const [searchParams, setSearchParams] = useState("");
 
     const formRef = useRef<FormHandles>(null);
@@ -73,7 +71,7 @@ const ListActiveTravels = () => {
             });
         };
         loadTravels();
-    }, []);
+    }, [reload]);
 
     const goToEdit = React.useCallback(
         (id: string) => {
@@ -85,57 +83,33 @@ const ListActiveTravels = () => {
         ],
       );
 
-    const handleSearch = useCallback(
-        async (data: ISearchParam): Promise<void> => {
-            try {
-                formRef.current!.setErrors({});
-                const schema = Yup.object().shape({
-                    search_param: Yup.string(),
-                });
-
-                await schema.validate(data, {
-                    abortEarly: false,
-                });
-
-                await api.get(`/travels/search/${data.search_param}`).then( response => {
-                    const travels = response.data.map( ( travel: ITravels ) => ({
-                        id: travel.id,
-                        departure_date: travel.departure_date,
-                        destination: travel.destination,
-                        driver: travel.driver,
-                        vehicle: travel.vehicle,
-                        vacant_seats: travel.vacant_seats,
-                        status: travel.status,
-                    }) );
-                    setTravels(travels);
-                })
-            } catch(err){
-                alert('Nenhum resultado.');
-            }
-        }, [
-
+      const searchTravel = React.useCallback(() => {
+        if ( searchParams ) {
+           api.get(`/travels/search/${searchParams}`).then( response => {
+            const travels = response.data.map( ( travel: ITravels ) => ({
+                id: travel.id,
+                departure_date: travel.departure_date,
+                destination: travel.destination,
+                driver: travel.driver,
+                vehicle: travel.vehicle,
+                vacant_seats: travel.vacant_seats,
+                status: travel.status,
+            }) );
+            setTravels(travels);
+        });
+        }
+    }, [
+        searchParams
     ]);
-    // const searchTravel = useCallback(
-    //     async (): Promise<void> => {
-    //         try {
-    //             await api.get(`/travels/search/${searchParams}`).then( response => {
-    //                 const travels = response.data.map( ( travel: ITravels ) => ({
-    //                     id: travel.id,
-    //                     departure_date: travel.departure_date,
-    //                     destination: travel.destination,
-    //                     driver: travel.driver,
-    //                     vehicle: travel.vehicle,
-    //                     vacant_seats: travel.vacant_seats,
-    //                     status: travel.status,
-    //                 }) );
-    //                 setTravels(travels);
-    //             })
-    //         } catch(err){
-    //             alert('Nenhum resultado.');
-    //         }
-    //     }, [
-    //         searchParams
-    // ]);
+
+    const clearSearch = React.useCallback(
+            () => {
+                setReload(reload + 1);
+            },
+            [
+                reload
+            ],
+        );
 
     return(
         <MainDiv>
@@ -146,20 +120,25 @@ const ListActiveTravels = () => {
             </Container>
 
             <SearchContainer>
-                <Form ref={formRef} onSubmit={handleSearch} >
+                <Form ref={formRef} onSubmit={searchTravel} >
                     <ColumnDiv>
-                        <div style={{width: '75%'}}>
+                        <div style={{width: '50%'}}>
                             <Input 
                                 name="search_param" 
-                                label="Buscar no dia" 
+                                label="Buscar por" 
                                 type="date"
                                 onChange={event => setSearchParams(event.target.value)}
                             />
                         </div>
                         <div style={{width: '20%', marginTop: '3rem'}}>
-                            {/* <MyButton onClick={() => searchTravel()}>
-                                <MyFiSearch />
-                            </MyButton> */}
+                            <MyButton onClick={() => searchTravel()}>
+                            <h4 style={{color: '#FFF'}}>Pesquisar</h4>
+                            </MyButton>
+                        </div>
+                        <div style={{width: '20%', marginTop: '3rem'}}>
+                            <MyButton onClick={() => clearSearch()} style={{background: '#f74848'}}>
+                                <h4 style={{color: '#FFF'}}>Limpar busca</h4>
+                            </MyButton>
                         </div>
                     </ColumnDiv>
                 </Form>

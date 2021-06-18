@@ -35,6 +35,36 @@ export const Container = styled.div`
     padding: 1rem;
 `;
 
+export const ColumnDiv = styled.div`
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+
+    justify-content: space-between;
+    align-items: center;
+`;
+
+export const SearchContainer = styled.div`
+    height: 7.5rem;
+    width: 50%;
+
+    border-radius: 1rem;
+
+    background-color: #fff;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: flex-start;
+
+    padding: 3rem;
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+    margin: 0 auto;
+    margin-bottom: 1rem;
+`;
+
 export const FormContainer = styled.div`
     min-height: 20rem;
     width: 50%;

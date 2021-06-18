@@ -1,16 +1,18 @@
 import React, { 
-    // useRef, 
+    useRef, 
     // useCallback,
     useEffect,
     useState,
 } from 'react';
 
 // import * as Yup from 'yup';
-// import { FormHandles } from '@unform/core';
+import { FormHandles } from '@unform/core';
 
 import api from '../../../services/api';
 
 import { useHistory } from 'react-router';
+
+import Input from '../../../components/Input';
 
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -19,10 +21,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import {
-    // Form,
+    Form,
     MainDiv,
+    ColumnDiv,
     Container,
     FormContainer,
+    SearchContainer,
     Title,
     MyTable,
     MyFiSearch,
@@ -42,7 +46,10 @@ const ListActivePassengers = () => {
 
     const [passengers, setPassengers] = useState<IPassengers[]>([]);
 
-    // const formRef = useRef<FormHandles>(null);
+    const [reload, setReload] = useState(0);
+    const [searchParams, setSearchParams] = useState("");
+
+    const formRef = useRef<FormHandles>(null);
 
     useEffect(() => {
         async function loadPassengers(): Promise<void> {
@@ -59,16 +66,33 @@ const ListActivePassengers = () => {
             });
         };
         loadPassengers();
-    }, []);
+    }, [reload]);
 
-    // const handleSubmit = React.useCallback(
-    //     (id: string) => {
-    //     //   history.push('/', id);
-    //     },
-    //     [
-    //         // history
-    //     ],
-    //   );
+    const searchDriver = React.useCallback(() => {
+        if ( searchParams ) {
+           api.get(`/passengers/search/${searchParams}`).then( response => {
+            const passengers = response.data.map( ( passenger: IPassengers ) => ({
+                id: passenger.id,
+                name: passenger.name,
+                birth_date: passenger.birth_date,
+                cell_phone: passenger.cell_phone,
+                rg: passenger.rg,
+            }) );
+            setPassengers(passengers);
+            }); 
+        }
+    }, [
+        searchParams
+    ]);
+
+    const clearSearch = React.useCallback(
+            () => {
+                setReload(reload + 1);
+            },
+            [
+                reload
+            ],
+        );
 
       const goToEdit = React.useCallback(
         (id: string) => {
@@ -86,9 +110,32 @@ const ListActivePassengers = () => {
                 <Title>
                     Passageiros:
                 </Title>
-
-                
             </Container>
+
+            <SearchContainer>
+                <Form ref={formRef} onSubmit={searchDriver} >
+                    <ColumnDiv>
+                        <div style={{width: '50%'}}>
+                            <Input 
+                                name="search_param" 
+                                label="Buscar por" 
+                                onChange={event => setSearchParams(event.target.value)}
+                            />
+                        </div>
+                        <div style={{width: '20%', marginTop: '3rem'}}>
+                            <MyButton onClick={() => searchDriver()}>
+                                <h4 style={{color: '#FFF'}}>Pesquisar</h4>
+                            </MyButton>
+                        </div>
+                        <div style={{width: '20%', marginTop: '3rem'}}>
+                            <MyButton onClick={() => clearSearch()} style={{background: '#f74848'}}>
+                                <h4 style={{color: '#FFF'}}>Limpar busca</h4>
+                            </MyButton>
+                        </div>
+                    </ColumnDiv>
+                </Form>
+            </SearchContainer>
+
             <FormContainer>
                 {/* <Form ref={formRef} onSubmit={handleSubmit} > */}
 
