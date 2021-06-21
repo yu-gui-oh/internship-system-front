@@ -36,7 +36,8 @@ import {
 
 interface ITravels {
     id: string;
-    departure_date: Date;
+    // departure_date: Date;
+    departure_date: string;
     destination: string;
     driver: string;
     vehicle: string;
@@ -132,7 +133,7 @@ const ListActiveTravels = () => {
                         </div>
                         <div style={{width: '20%', marginTop: '3rem'}}>
                             <MyButton onClick={() => searchTravel()}>
-                            <h4 style={{color: '#FFF'}}>Pesquisar</h4>
+                                <h4 style={{color: '#FFF'}}>Pesquisar</h4>
                             </MyButton>
                         </div>
                         <div style={{width: '20%', marginTop: '3rem'}}>

@@ -58,7 +58,8 @@ interface IDriverOpt {
 }
 
 interface ICreateTravel {
-    departure_date: Date;
+    // departure_date: Date;
+    departure_date: string;
     departure_hour: string;
     destination: string;
     vehicle: string;
@@ -131,7 +132,8 @@ const CreateTravel = () => {
                 formRef.current!.setErrors({});
 
                 const schema = Yup.object().shape({
-                    departure_date: Yup.date().required('Informe a data de partida'),
+                    // departure_date: Yup.date().required('Informe a data de partida'),
+                    departure_date: Yup.string().required('Informe a data de partida'),
                     departure_hour: Yup.string().required('Informe a hora de partida'),
                     destination: Yup.string().required('Informe o destino'),
                     vehicle: Yup.string().required('Informe o veículo'),

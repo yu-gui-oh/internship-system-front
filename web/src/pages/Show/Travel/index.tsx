@@ -59,7 +59,8 @@ interface IDriverOpt {
 
 interface ICreateTravel {
     id: string;
-    departure_date: Date;
+    // departure_date: Date;
+    departure_date: string;
     departure_hour: string;
     destination: string;
     vehicle: string;
@@ -175,13 +176,14 @@ const CreateTravel = () => {
                 formRef.current!.setErrors({});
 
                 const schema = Yup.object().shape({
-                    departure_date: Yup.date().required('Informe a data de partida'),
-                    departure_hour: Yup.string().required('Informe a hora de partida'),
+                    // departure_date: Yup.date().required('Informe a data de partida'),
+                    departure_date: Yup.string().required('Informe a data de partida'),
+                    departure_hour: Yup.string(),
                     destination: Yup.string().required('Informe o destino'),
                     vehicle: Yup.string().required('Informe o veículo'),
                     driver: Yup.date().required('Informe o motorista'),
-                    return_date: Yup.date().required('Informe a data de retorno'),
-                    return_hour: Yup.string().required('Informe a hora de retorno'),
+                    return_date: Yup.date(),
+                    return_hour: Yup.string(),
                     daily_payout: Yup.number().required('Informe o valor da diária'),
                     absent_hours: Yup.number().nullable(),
                     status: Yup.string().required('Informe o status da viagem'),
@@ -331,7 +333,7 @@ const CreateTravel = () => {
                         <div style={{width: '45%'}}>
                             <Input 
                                 name="absent_hours" 
-                                label="Horas ausentes (se houver)" 
+                                label="Horas ausentes" 
                                 type="number"
                                 placeholder="0"
                                 onChange={event => handleAbsentHours(event)}
