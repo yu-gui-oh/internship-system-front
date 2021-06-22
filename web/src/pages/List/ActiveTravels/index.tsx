@@ -1,6 +1,5 @@
 import React, { 
     useRef, 
-    // useCallback,
     useEffect,
     useState,
 } from 'react';
@@ -12,7 +11,8 @@ import api from '../../../services/api';
 
 import { useHistory } from 'react-router';
 
-import Input from '../../../components/Input'
+import Input from '../../../components/Input';
+import Loading from '../../../components/Loading';
 
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -36,7 +36,6 @@ import {
 
 interface ITravels {
     id: string;
-    // departure_date: Date;
     departure_date: string;
     destination: string;
     driver: string;
@@ -53,9 +52,12 @@ const ListActiveTravels = () => {
     const [reload, setReload] = useState(0);
     const [searchParams, setSearchParams] = useState("");
 
+    const [loaded, setLoaded] = useState(false);
+
     const formRef = useRef<FormHandles>(null);
 
     useEffect(() => {
+        setLoaded(false);
         async function loadTravels(): Promise<void> {
             await api.get('/travels/active')
             .then( response => {
@@ -69,6 +71,11 @@ const ListActiveTravels = () => {
                     status: travel.status,
                 }) );
                 setTravels(travels);
+                setTimeout(
+                    () => 
+                    setLoaded(true),
+                    1500
+                );
             });
         };
         loadTravels();
@@ -85,6 +92,7 @@ const ListActiveTravels = () => {
       );
 
       const searchTravel = React.useCallback(() => {
+        setLoaded(false);
         if ( searchParams ) {
            api.get(`/travels/search/${searchParams}`).then( response => {
             const travels = response.data.map( ( travel: ITravels ) => ({
@@ -97,6 +105,11 @@ const ListActiveTravels = () => {
                 status: travel.status,
             }) );
             setTravels(travels);
+            setTimeout(
+                () => 
+                setLoaded(true),
+                1500
+            );
         });
         }
     }, [
@@ -146,56 +159,57 @@ const ListActiveTravels = () => {
             </SearchContainer>
 
             <FormContainer>
-                {/* <Form ref={formRef} onSubmit={handleSubmit} > */}
-
-                <TableContainer>
-                    <MyTable>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="center" > Data da viagem </TableCell>
-                                <TableCell align="center" > Destino </TableCell>
-                                <TableCell align="center" > Motorista </TableCell>
-                                <TableCell align="center" > Veículo </TableCell>
-                                <TableCell align="center" > Assentos vagos </TableCell>
-                                <TableCell align="center" > Detalhes </TableCell>
-                                <TableCell align="center" > Passageiros na viagem </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                        {travels.map( (travel: ITravels) => (
-                            <TableRow key={travel.id}>
-                                <TableCell align="center" >
-                                    {new Date(travel.departure_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
-                                </TableCell>
-                                <TableCell align="center" >
-                                    {travel.destination}
-                                </TableCell>
-                                <TableCell align="center" >
-                                    {travel.driver}
-                                </TableCell>
-                                <TableCell align="center" >
-                                    {travel.vehicle}
-                                </TableCell>
-                                <TableCell align="center" >
-                                    {travel.vacant_seats}
-                                </TableCell>
-                                <TableCell align="center" >
-                                    <MyButton type="submit" onClick={() => goToEdit(travel.id)}>
-                                        <MyFiSearch />
-                                    </MyButton>
-                                </TableCell>
-                                <TableCell align="center" >
-                                    <MyButton type="submit">
-                                        <MyFiUsers />
-                                    </MyButton>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                        </TableBody>
-                    </MyTable>
-                </TableContainer>
-                {/* </Form> */}
-               
+                {
+                loaded === false ?
+                    <Loading />
+                :
+                    <TableContainer>
+                        <MyTable>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="center" > Data da viagem </TableCell>
+                                    <TableCell align="center" > Destino </TableCell>
+                                    <TableCell align="center" > Motorista </TableCell>
+                                    <TableCell align="center" > Veículo </TableCell>
+                                    <TableCell align="center" > Assentos vagos </TableCell>
+                                    <TableCell align="center" > Detalhes </TableCell>
+                                    <TableCell align="center" > Passageiros na viagem </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {travels.map( (travel: ITravels) => (
+                                <TableRow key={travel.id}>
+                                    <TableCell align="center" >
+                                        {new Date(travel.departure_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
+                                    </TableCell>
+                                    <TableCell align="center" >
+                                        {travel.destination}
+                                    </TableCell>
+                                    <TableCell align="center" >
+                                        {travel.driver}
+                                    </TableCell>
+                                    <TableCell align="center" >
+                                        {travel.vehicle}
+                                    </TableCell>
+                                    <TableCell align="center" >
+                                        {travel.vacant_seats}
+                                    </TableCell>
+                                    <TableCell align="center" >
+                                        <MyButton type="submit" onClick={() => goToEdit(travel.id)}>
+                                            <MyFiSearch />
+                                        </MyButton>
+                                    </TableCell>
+                                    <TableCell align="center" >
+                                        <MyButton type="submit">
+                                            <MyFiUsers />
+                                        </MyButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                            </TableBody>
+                        </MyTable>
+                    </TableContainer>
+                }
             </FormContainer>
         </MainDiv>
     );

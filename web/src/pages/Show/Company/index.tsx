@@ -15,6 +15,7 @@ import { useHistory } from 'react-router';
 import Input from '../../../components/Input';
 import Select from '../../../components/Select';
 import Button from '../../../components/Button';
+import Loading from '../../../components/Loading';
 
 import {
     Form,
@@ -51,6 +52,8 @@ const ShowCompany = () => {
     const [cnpj, setCnpj] = useState("");
     const [phone, setPhone] = useState("");
 
+    const [loaded, setLoaded] = useState(false);
+
     const formRef = useRef<FormHandles>(null);
 
     const UFOptions =[
@@ -84,6 +87,7 @@ const ShowCompany = () => {
     ];
 
     useEffect(() => {
+        setLoaded(false);
         async function loadCompany(): Promise<void> {
             await api.get('/company/details').then(response =>{
                 const company = response.data.map( (company: ICompany) => ({
@@ -110,6 +114,11 @@ const ShowCompany = () => {
                     setCnpj(company.cnpj);
                     setPhone(company.phone);
                 });
+                setTimeout(
+                    () => 
+                    setLoaded(true),
+                    1500
+                );
             });
         }
         loadCompany();
@@ -157,7 +166,11 @@ const ShowCompany = () => {
                 </Title>
             </Container>
             <FormContainer>
-                <Form ref={formRef} onSubmit={handleSubmit} >
+            {
+                loaded === false ?
+                    <Loading />
+                :
+                    <Form ref={formRef} onSubmit={handleSubmit} >
                             <div>
                                 <Input 
                                     name="name" 
@@ -230,6 +243,7 @@ const ShowCompany = () => {
                             </div>
                     <Button type="submit">Salvar</Button>
                 </Form>
+            }
             </FormContainer>
         </MainDiv>
     );

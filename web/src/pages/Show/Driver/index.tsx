@@ -14,6 +14,7 @@ import { useHistory } from 'react-router';
 
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
+import Loading from '../../../components/Loading';
 
 import {
     Form,
@@ -42,18 +43,22 @@ const ShowDriver = () => {
     const [cnh, setCnh] = useState("");
     const [celPhone, setCelPhone] = useState("");
 
+    const [loaded, setLoaded] = useState(false);
+
     const formRef = useRef<FormHandles>(null);
 
     useEffect(() => {
-        async function loadPassenger(): Promise<void> {
+        setLoaded(false);
+        async function loadDriver(): Promise<void> {
             await api.get(`/drivers/${driver_id}`).then(response =>{
                     setName(response.data.name);
                     setCpf(response.data.cpf);
                     setCnh(response.data.cnh);
                     setCelPhone(response.data.cel_phone);
                 });
+                setLoaded(true);
         }
-        loadPassenger();
+        loadDriver();
     }, [driver_id]);
 
     const handleSubmit = useCallback(
@@ -96,34 +101,39 @@ const ShowDriver = () => {
                 
             </Container>
             <FormContainer>
-                <Form ref={formRef} onSubmit={handleSubmit} >
-                    <Input 
-                        name="name" 
-                        label="Nome" 
-                        value={name}
-                        onChange={event => setName(event.target.value)}
-                    />
-                    <Input 
-                        name="cpf" 
-                        label="CPF" 
-                        value={cpf}
-                        onChange={event => setCpf(event.target.value)}
-                    />
-                    <Input 
-                        name="cnh" 
-                        label="CNH" 
-                        value={cnh}
-                        onChange={event => setCnh(event.target.value)}
-                    />
-                    <Input 
-                        name="cel_phone" 
-                        label="Número de celular" 
-                        value={celPhone}
-                        onChange={event => setCelPhone(event.target.value)}
-                    />
+            {
+                loaded === false ?
+                    <Loading />
+                :
+                    <Form ref={formRef} onSubmit={handleSubmit} >
+                        <Input 
+                            name="name" 
+                            label="Nome" 
+                            value={name}
+                            onChange={event => setName(event.target.value)}
+                        />
+                        <Input 
+                            name="cpf" 
+                            label="CPF" 
+                            value={cpf}
+                            onChange={event => setCpf(event.target.value)}
+                        />
+                        <Input 
+                            name="cnh" 
+                            label="CNH" 
+                            value={cnh}
+                            onChange={event => setCnh(event.target.value)}
+                        />
+                        <Input 
+                            name="cel_phone" 
+                            label="Número de celular" 
+                            value={celPhone}
+                            onChange={event => setCelPhone(event.target.value)}
+                        />
 
-                    <Button type="submit">Salvar</Button>
-                </Form>
+                        <Button type="submit">Salvar</Button>
+                    </Form>
+            }
             </FormContainer>
         </MainDiv>
     );

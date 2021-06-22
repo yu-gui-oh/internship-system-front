@@ -16,6 +16,7 @@ import { useHistory } from 'react-router';
 import Input from '../../../components/Input';
 import Select from '../../../components/Select';
 import Button from '../../../components/Button';
+import Loading from '../../../components/Loading';
 
 import {
     Form,
@@ -57,7 +58,7 @@ interface IDriverOpt {
     label: string;
 }
 
-interface ICreateTravel {
+interface IShowTravel {
     id: string;
     // departure_date: Date;
     departure_date: string;
@@ -76,7 +77,7 @@ interface ICreateTravel {
     vacant_seats: number;
 };
 
-const CreateTravel = () => {
+const ShowTravel = () => {
     const history = useHistory();
 
     const travel_id = localStorage.getItem('travel_id');
@@ -98,6 +99,7 @@ const CreateTravel = () => {
     const [bookedSeats, setBookedSeats] = useState(0);
     const [vacantSeats, setVacantSeats] = useState(0);
 
+    const [loaded, setLoaded] = useState(false);
 
     const formRef = useRef<FormHandles>(null);
 
@@ -112,6 +114,7 @@ const CreateTravel = () => {
     ];
 
     useEffect(() => {
+        setLoaded(false);
         async function loadVehicles(): Promise<void> {
             await api.get('/vehicles').then(response =>{
                 const vehicles = response.data.map( (vehicle: IVehicle) => ({
@@ -167,11 +170,17 @@ const CreateTravel = () => {
         loadDestinations();
         loadDrivers();
         loadTravel();
+        setTimeout(
+            () => 
+            setLoaded(true),
+            1500
+        );
+
 
     }, [travel_id]);
 
     const handleSubmit = useCallback(
-        async (data: ICreateTravel) => {
+        async (data: IShowTravel) => {
             try {
                 formRef.current!.setErrors({});
 
@@ -251,6 +260,10 @@ const CreateTravel = () => {
                 </Title>
             </Container>
             <FormContainer>
+            {
+                loaded === false ?
+                    <Loading />
+                :
                 <Form ref={formRef} onSubmit={handleSubmit} >
                     <ColumnDiv>
                         <div style={{width: '45%'}}>
@@ -395,9 +408,10 @@ const CreateTravel = () => {
                     }
                     
                 </Form>
+            }
             </FormContainer>
         </MainDiv>
     );
 }
 
-export default CreateTravel;
+export default ShowTravel;

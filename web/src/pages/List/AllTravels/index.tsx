@@ -12,7 +12,8 @@ import api from '../../../services/api';
 
 import { useHistory } from 'react-router';
 
-import Input from '../../../components/Input'
+import Input from '../../../components/Input';
+import Loading from '../../../components/Loading';
 
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -51,9 +52,12 @@ const ListActiveTravels = () => {
     const [reload, setReload] = useState(0);
     const [searchParams, setSearchParams] = useState("");
 
+    const [loaded, setLoaded] = useState(false);
+
     const formRef = useRef<FormHandles>(null);
 
     useEffect(() => {
+        setLoaded(false);
         async function loadTravels(): Promise<void> {
             await api.get('/list/travels')
             .then( response => {
@@ -66,6 +70,7 @@ const ListActiveTravels = () => {
                     status: travel.status,
                 }) );
                 setTravels(travels);
+                setLoaded(true);
             });
         };
         loadTravels();
@@ -83,6 +88,7 @@ const ListActiveTravels = () => {
 
     
     const searchTravel = React.useCallback(() => {
+        setLoaded(false);
         if ( searchParams ) {
            api.get(`/travels/search/${searchParams}`).then( response => {
             const travels = response.data.map( ( travel: ITravels ) => ({
@@ -94,6 +100,7 @@ const ListActiveTravels = () => {
                 status: travel.status,
             }) );
             setTravels(travels);
+            setLoaded(true);
         });
         }
     }, [
@@ -143,8 +150,10 @@ const ListActiveTravels = () => {
             </SearchContainer>
 
             <FormContainer>
-                {/* <Form ref={formRef} onSubmit={handleSubmit} > */}
-
+            {
+            loaded === false ?
+                <Loading />
+            :
                 <TableContainer>
                     <MyTable>
                         <TableHead>
@@ -191,8 +200,7 @@ const ListActiveTravels = () => {
                         </TableBody>
                     </MyTable>
                 </TableContainer>
-                {/* </Form> */}
-               
+            }
             </FormContainer>
         </MainDiv>
     );
