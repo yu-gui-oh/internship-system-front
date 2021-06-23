@@ -56,7 +56,11 @@ const ShowDriver = () => {
                     setCnh(response.data.cnh);
                     setCelPhone(response.data.cel_phone);
                 });
-                setLoaded(true);
+                setTimeout(
+                    () => 
+                    setLoaded(true),
+                    1500
+                );
         }
         loadDriver();
     }, [driver_id]);

@@ -1,6 +1,5 @@
 import React, { 
     useRef, 
-    // useCallback,
     useEffect,
     useState,
 } from 'react';
@@ -70,7 +69,11 @@ const ListActiveTravels = () => {
                     status: travel.status,
                 }) );
                 setTravels(travels);
-                setLoaded(true);
+                setTimeout(
+                    () => 
+                    setLoaded(true),
+                    1500
+                );
             });
         };
         loadTravels();
@@ -100,7 +103,11 @@ const ListActiveTravels = () => {
                 status: travel.status,
             }) );
             setTravels(travels);
-            setLoaded(true);
+            setTimeout(
+                () => 
+                setLoaded(true),
+                1500
+            );
         });
         }
     }, [

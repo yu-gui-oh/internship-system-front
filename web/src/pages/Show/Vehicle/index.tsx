@@ -15,6 +15,7 @@ import { useHistory } from 'react-router';
 import Input from '../../../components/Input';
 import Select from '../../../components/Select';
 import Button from '../../../components/Button';
+import Loading from '../../../components/Loading';
 
 import {
     Form,
@@ -41,6 +42,8 @@ const ShowVehicle = () => {
     const [type, setType] = useState("");
     const [dueDate, setDueDate] = useState("");
 
+    const [loaded, setLoaded] = useState(false);
+
     const formRef = useRef<FormHandles>(null);
 
     const VehicleTypeOptions =[
@@ -49,6 +52,7 @@ const ShowVehicle = () => {
     ];
 
     useEffect(() => {
+        setLoaded(false);
         async function loadVehicle(): Promise<void> {
             await api.get(`/vehicles/${vehicle_id}`).then(response =>{
                     setPlate(response.data.plate);
@@ -58,6 +62,11 @@ const ShowVehicle = () => {
                 });
         }
         loadVehicle();
+        setTimeout(
+            () => 
+            setLoaded(true),
+            1500
+        );
     }, [vehicle_id]);
 
     const handleSubmit = useCallback(
@@ -96,38 +105,41 @@ const ShowVehicle = () => {
                 <Title>
                     Cadastro de veículo:
                 </Title>
-
-                
             </Container>
             <FormContainer>
-                <Form ref={formRef} onSubmit={handleSubmit} >
-                    <Input 
-                        name="plate" 
-                        label="Placa" 
-                        value={plate}
-                        onChange={event => setPlate(event.target.value)}
-                    />
-                    <Input 
-                        name="vehicle" 
-                        label="Modelo" 
-                        value={vehicle}
-                        onChange={event => setVehicle(event.target.value)}
-                    />
-                    <Select 
-                        name="type"
-                        options={VehicleTypeOptions}
-                        defaultOption={type}
-                        label="Informe o tipo do veículo"
-                    />
-                    <Input 
-                        name="due_date" 
-                        label="Vencimento da documentação" 
-                        type="date"
-                        value={String(dueDate) || ''}
-                        onChange={event => setDueDate(event.target.value)}
-                    />
-                    <Button type="submit">Salvar</Button>
-                </Form>
+            {
+                loaded === false ?
+                    <Loading />
+                :
+                    <Form ref={formRef} onSubmit={handleSubmit} >
+                        <Input 
+                            name="plate" 
+                            label="Placa" 
+                            value={plate}
+                            onChange={event => setPlate(event.target.value)}
+                        />
+                        <Input 
+                            name="vehicle" 
+                            label="Modelo" 
+                            value={vehicle}
+                            onChange={event => setVehicle(event.target.value)}
+                        />
+                        <Select 
+                            name="type"
+                            options={VehicleTypeOptions}
+                            defaultOption={type}
+                            label="Informe o tipo do veículo"
+                        />
+                        <Input 
+                            name="due_date" 
+                            label="Vencimento da documentação" 
+                            type="date"
+                            value={String(dueDate) || ''}
+                            onChange={event => setDueDate(event.target.value)}
+                        />
+                        <Button type="submit">Salvar</Button>
+                    </Form>
+            }
             </FormContainer>
         </MainDiv>
     );

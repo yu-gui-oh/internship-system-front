@@ -15,6 +15,7 @@ import { useHistory } from 'react-router';
 import Input from '../../../components/Input';
 import Select from '../../../components/Select';
 import Button from '../../../components/Button';
+import Loading from '../../../components/Loading';
 
 import {
     Form,
@@ -66,6 +67,8 @@ const ShowPassenger = () => {
     const [uf, setUf] = useState("");
     const [phone, setPhone] = useState("");
 
+    const [loaded, setLoaded] = useState(false);
+
     const formRef = useRef<FormHandles>(null);
 
     const UFOptions =[
@@ -99,6 +102,7 @@ const ShowPassenger = () => {
     ];
 
     useEffect(() => {
+        setLoaded(false);
         async function loadPassenger(): Promise<void> {
             await api.get(`/passengers/${passenger_id}`).then(response =>{
                     setName(response.data.name);
@@ -119,6 +123,11 @@ const ShowPassenger = () => {
                 });
         }
         loadPassenger();
+        setTimeout(
+            () => 
+            setLoaded(true),
+            1500
+        );
     }, [passenger_id]);
 
     const handleSubmit = useCallback(
@@ -173,114 +182,119 @@ const ShowPassenger = () => {
                 </Title>
             </Container>
             <FormContainer>
-                <Form ref={formRef} onSubmit={handleSubmit} >
-                    <Input 
-                        name="name" 
-                        label="Nome" 
-                        value={name}
-                        onChange={event => setName(event.target.value)}
-                    />
-                    <Input 
-                        name="cpf" 
-                        label="CPF" 
-                        value={cpf}
-                        onChange={event => setCpf(event.target.value)}
-                    />
-                    <Input 
-                        name="rg" 
-                        label="RG" 
-                        value={rg}
-                        onChange={event => setRg(event.target.value)}
-                    />
-                    <Input 
-                        name="issuing_body" 
-                        label="Órgão emissor" 
-                        value={issuingBody}
-                        onChange={event => setIssuingBody(event.target.value)}
-                    />
-                    <Input 
-                        name="birth_date" 
-                        label="Data de nascimento" 
-                        type="date"
-                        value={String(birthDate) || ''}
-                        onChange={event => setBirthDate(event.target.value)}
-                    />
-                    <Input 
-                        name="cep" 
-                        label="CEP" 
-                        value={cep}
-                        onChange={event => setCep(event.target.value)}
-                    />
-                    <ColumnDiv>
-                        <div style={{width: '70%'}}>
-                            <Input 
-                                name="address" 
-                                label="Endereço" 
-                                value={address}
-                                onChange={event => setAddress(event.target.value)}
-                            />
-                        </div>
-                        <div style={{width: '25%'}}>
-                            <Input 
-                                name="number" 
-                                label="Número" 
-                                value={number}
-                                onChange={event => setNumber(event.target.value)}
-                            />
-                        </div>
-                    </ColumnDiv>
-                    <Input 
-                        name="neighbourhood" 
-                        label="Bairro" 
-                        value={neighbourhood}
-                        onChange={event => setNeighbourhood(event.target.value)}
-                    />
-                    <ColumnDiv>
-                        <div style={{width: '55%'}}>
-                            <Input 
-                                name="city" 
-                                label="Cidade" 
-                                value={city}
-                                onChange={event => setCity(event.target.value)}
-                            />
-                        </div>
-                        <div style={{width: '40%'}}>
-                            <Select 
-                                name="uf"
-                                options={UFOptions}
-                                defaultOption={uf}
-                                label="UF"
-                            />
-                        </div>
-                    </ColumnDiv>
-                    
-                    <Input 
-                        name="complement" 
-                        label="Complemento" 
-                        value={complement}
-                        onChange={event => setComplement(event.target.value)}
-                    />
-                    <Input 
-                        name="phone" 
-                        label="Número de telefone" 
-                        value={phone}
-                        onChange={event => setPhone(event.target.value)}
-                    />
-                    <Input 
-                        name="cell_phone" 
-                        label="Número de celular" 
-                        value={cellPhone}
-                        onChange={event => setCellPhone(event.target.value)}
-                    />
+            {
+                loaded === false ?
+                    <Loading />
+                :
+                    <Form ref={formRef} onSubmit={handleSubmit} >
+                        <Input 
+                            name="name" 
+                            label="Nome" 
+                            value={name}
+                            onChange={event => setName(event.target.value)}
+                        />
+                        <Input 
+                            name="cpf" 
+                            label="CPF" 
+                            value={cpf}
+                            onChange={event => setCpf(event.target.value)}
+                        />
+                        <Input 
+                            name="rg" 
+                            label="RG" 
+                            value={rg}
+                            onChange={event => setRg(event.target.value)}
+                        />
+                        <Input 
+                            name="issuing_body" 
+                            label="Órgão emissor" 
+                            value={issuingBody}
+                            onChange={event => setIssuingBody(event.target.value)}
+                        />
+                        <Input 
+                            name="birth_date" 
+                            label="Data de nascimento" 
+                            type="date"
+                            value={String(birthDate) || ''}
+                            onChange={event => setBirthDate(event.target.value)}
+                        />
+                        <Input 
+                            name="cep" 
+                            label="CEP" 
+                            value={cep}
+                            onChange={event => setCep(event.target.value)}
+                        />
+                        <ColumnDiv>
+                            <div style={{width: '70%'}}>
+                                <Input 
+                                    name="address" 
+                                    label="Endereço" 
+                                    value={address}
+                                    onChange={event => setAddress(event.target.value)}
+                                />
+                            </div>
+                            <div style={{width: '25%'}}>
+                                <Input 
+                                    name="number" 
+                                    label="Número" 
+                                    value={number}
+                                    onChange={event => setNumber(event.target.value)}
+                                />
+                            </div>
+                        </ColumnDiv>
+                        <Input 
+                            name="neighbourhood" 
+                            label="Bairro" 
+                            value={neighbourhood}
+                            onChange={event => setNeighbourhood(event.target.value)}
+                        />
+                        <ColumnDiv>
+                            <div style={{width: '55%'}}>
+                                <Input 
+                                    name="city" 
+                                    label="Cidade" 
+                                    value={city}
+                                    onChange={event => setCity(event.target.value)}
+                                />
+                            </div>
+                            <div style={{width: '40%'}}>
+                                <Select 
+                                    name="uf"
+                                    options={UFOptions}
+                                    defaultOption={uf}
+                                    label="UF"
+                                />
+                            </div>
+                        </ColumnDiv>
+                        
+                        <Input 
+                            name="complement" 
+                            label="Complemento" 
+                            value={complement}
+                            onChange={event => setComplement(event.target.value)}
+                        />
+                        <Input 
+                            name="phone" 
+                            label="Número de telefone" 
+                            value={phone}
+                            onChange={event => setPhone(event.target.value)}
+                        />
+                        <Input 
+                            name="cell_phone" 
+                            label="Número de celular" 
+                            value={cellPhone}
+                            onChange={event => setCellPhone(event.target.value)}
+                        />
 
-                    <Input 
-                        name="observation" 
-                        label="Observação" 
-                        value={observation}
-                        onChange={event => setObservation(event.target.value)}
-                    />
-                    <Button type="submit">Salvar</Button>
-                </Form>
+                        <Input 
+                            name="observation" 
+                            label="Observação" 
+                            value={observation}
+                            onChange={event => setObservation(event.target.value)}
+                        />
+                        <Button type="submit">Salvar</Button>
+                    </Form>
+            }
             </FormContainer>
         </MainDiv>
     );

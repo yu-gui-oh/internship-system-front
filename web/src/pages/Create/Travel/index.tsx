@@ -24,7 +24,6 @@ import {
     FormContainer,
     Title,
     ColumnDiv,
-    // Input,
 } from './styles';
 
 interface IVehicle {
@@ -58,7 +57,6 @@ interface IDriverOpt {
 }
 
 interface ICreateTravel {
-    // departure_date: Date;
     departure_date: string;
     departure_hour: string;
     destination: string;

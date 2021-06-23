@@ -1,9 +1,9 @@
 import styled from  'styled-components';
 
 import Table from '@material-ui/core/Table';
-import { FiSearch } from 'react-icons/fi';
+import { FiSearch, FiUsers } from 'react-icons/fi';
 
-import Button from '../../../components/Button';
+import Button from '../../components/Button';
 
 import { Form as Unform } from '@unform/web';
 
@@ -46,8 +46,8 @@ export const Container = styled.div`
 `;
 
 export const SearchContainer = styled.div`
-    height: 7.5rem;
-    width: 50%;
+    height: 12.5rem;
+    width: 80%;
 
     border-radius: 1rem;
 
@@ -62,18 +62,19 @@ export const SearchContainer = styled.div`
     padding-top: 0rem;
     padding-bottom: 0rem;
     margin: 0 auto;
-    margin-bottom: 1rem;
+    margin-bottom: 3rem;
 `;
 
 export const FormContainer = styled.div`
     min-height: 20rem;
-    width: 50%;
+    width: 60%;
 
     border-radius: 1rem;
 
     background-color: #fff;
 
     display: flex;
+    flex-direction: column;
 
     justify-content: center;
     align-items: flex-start;
@@ -83,6 +84,45 @@ export const FormContainer = styled.div`
     padding-bottom: 2rem;
     margin: 0 auto;
     margin-bottom: 1rem;
+`;
+
+export const PassengersContainer = styled.div`
+    min-height: 20rem;
+    width: 100%;
+
+    border-radius: 1rem;
+
+    background-color: #f0f0f5;
+
+    display: flex;
+    flex-direction: row;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    padding: 1rem;
+    margin: 0 auto;
+    margin-bottom: 1rem;
+`;
+
+export const PassengersColumn = styled.div`
+    min-height: 20rem;
+    width: 49.4%;
+
+    border-radius: 1rem;
+
+    background-color: #fff;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: flex-start;
+    align-items: center;
+
+    padding: 1rem;
+    padding-top: 0;
+    padding-bottom: 2rem;
+    margin: 0 auto;
 `;
 
 export const Title = styled.h1`
@@ -107,7 +147,23 @@ export const MyButton = styled(Button)`
   }
 `;
 
+export const PassengerButton = styled(Button)`
+    margin-top: 0.5rem;
+    background-color: #35567d;
+
+    &:hover {
+        cursor: pointer;
+        background-color: #555f8f;
+  }
+`;
+
 export const MyFiSearch = styled(FiSearch)`
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+`;
+
+export const MyFiUsers = styled(FiUsers)`
   color: #fff;
   font-size: 1.5rem;
   font-weight: bold;

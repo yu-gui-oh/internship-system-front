@@ -50,7 +50,7 @@ const SimpleAccordion: React.FC<ToggleProps> = ({toggle}) => {
           Nova viagem
         </StyledLink>
 
-        <StyledLink to="/">
+        <StyledLink to="/agendamento">
           <MyFiClock />
           Agendamento
         </StyledLink>

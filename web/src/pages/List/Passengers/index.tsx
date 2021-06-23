@@ -1,6 +1,5 @@
 import React, { 
-    useRef, 
-    // useCallback,
+    useRef,
     useEffect,
     useState,
 } from 'react';
@@ -13,6 +12,7 @@ import api from '../../../services/api';
 import { useHistory } from 'react-router';
 
 import Input from '../../../components/Input';
+import Loading from '../../../components/Loading';
 
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -49,9 +49,12 @@ const ListActivePassengers = () => {
     const [reload, setReload] = useState(0);
     const [searchParams, setSearchParams] = useState("");
 
+    const [loaded, setLoaded] = useState(false);
+
     const formRef = useRef<FormHandles>(null);
 
     useEffect(() => {
+        setLoaded(false);
         async function loadPassengers(): Promise<void> {
             await api.get('/list/passengers')
             .then( response => {
@@ -63,12 +66,18 @@ const ListActivePassengers = () => {
                     rg: passenger.rg,
                 }) );
                 setPassengers(passengers);
+                setTimeout(
+                    () => 
+                    setLoaded(true),
+                    1500
+                );
             });
         };
         loadPassengers();
     }, [reload]);
 
-    const searchDriver = React.useCallback(() => {
+    const searchPassenger = React.useCallback(() => {
+        setLoaded(false);
         if ( searchParams ) {
            api.get(`/passengers/search/${searchParams}`).then( response => {
             const passengers = response.data.map( ( passenger: IPassengers ) => ({
@@ -79,6 +88,11 @@ const ListActivePassengers = () => {
                 rg: passenger.rg,
             }) );
             setPassengers(passengers);
+            setTimeout(
+                () => 
+                setLoaded(true),
+                1500
+            );
             }); 
         }
     }, [
@@ -113,7 +127,7 @@ const ListActivePassengers = () => {
             </Container>
 
             <SearchContainer>
-                <Form ref={formRef} onSubmit={searchDriver} >
+                <Form ref={formRef} onSubmit={searchPassenger} >
                     <ColumnDiv>
                         <div style={{width: '50%'}}>
                             <Input 
@@ -123,7 +137,7 @@ const ListActivePassengers = () => {
                             />
                         </div>
                         <div style={{width: '20%', marginTop: '3rem'}}>
-                            <MyButton onClick={() => searchDriver()}>
+                            <MyButton onClick={() => searchPassenger()}>
                                 <h4 style={{color: '#FFF'}}>Pesquisar</h4>
                             </MyButton>
                         </div>
@@ -137,45 +151,47 @@ const ListActivePassengers = () => {
             </SearchContainer>
 
             <FormContainer>
-                {/* <Form ref={formRef} onSubmit={handleSubmit} > */}
-
-                <TableContainer>
-                    <MyTable>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="center" > Nome </TableCell>
-                                <TableCell align="center" > Data de nascimento </TableCell>
-                                <TableCell align="center" > RG </TableCell>
-                                <TableCell align="center" > Celular </TableCell>
-                                <TableCell align="center" > Detalhes </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                        {passengers.map( (passenger: IPassengers) => (
-                            <TableRow key={passenger.id}>
-                                <TableCell align="center" >
-                                    {passenger.name}
-                                </TableCell>
-                                <TableCell align="center" >
-                                    {new Date(passenger.birth_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
-                                </TableCell>                                
-                                <TableCell align="center" >
-                                    {passenger.rg}
-                                </TableCell>
-                                <TableCell align="center" >
-                                    {passenger.cell_phone}
-                                </TableCell>
-                                <TableCell align="center" >
-                                    <MyButton type="submit" onClick={() => goToEdit(passenger.id)}>
-                                        <MyFiSearch />
-                                    </MyButton>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                        </TableBody>
-                    </MyTable>
-                </TableContainer>
-                {/* </Form> */}
+            {
+                loaded === false ?
+                    <Loading />
+                :
+                    <TableContainer>
+                        <MyTable>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="center" > Nome </TableCell>
+                                    <TableCell align="center" > Data de nascimento </TableCell>
+                                    <TableCell align="center" > RG </TableCell>
+                                    <TableCell align="center" > Celular </TableCell>
+                                    <TableCell align="center" > Detalhes </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {passengers.map( (passenger: IPassengers) => (
+                                <TableRow key={passenger.id}>
+                                    <TableCell align="center" >
+                                        {passenger.name}
+                                    </TableCell>
+                                    <TableCell align="center" >
+                                        {new Date(passenger.birth_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
+                                    </TableCell>                                
+                                    <TableCell align="center" >
+                                        {passenger.rg}
+                                    </TableCell>
+                                    <TableCell align="center" >
+                                        {passenger.cell_phone}
+                                    </TableCell>
+                                    <TableCell align="center" >
+                                        <MyButton type="submit" onClick={() => goToEdit(passenger.id)}>
+                                            <MyFiSearch />
+                                        </MyButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                            </TableBody>
+                        </MyTable>
+                    </TableContainer>
+            }
                
             </FormContainer>
         </MainDiv>
