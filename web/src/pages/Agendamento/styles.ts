@@ -119,10 +119,29 @@ export const PassengersColumn = styled.div`
     justify-content: flex-start;
     align-items: center;
 
-    padding: 1rem;
     padding-top: 0;
     padding-bottom: 2rem;
     margin: 0 auto;
+`;
+
+export const SeatsHeader = styled.div`
+    height: 3rem;
+    width: 100%;
+
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+
+    background-color: #35567d;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0.5rem;
+    margin: 0 auto;
+    margin-bottom: 1rem;
 `;
 
 export const Title = styled.h1`

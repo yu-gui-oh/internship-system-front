@@ -29,6 +29,7 @@ import {
     // MyFiUsers,
     MyButton,
     PassengerButton,
+    SeatsHeader,
 } from './styles';
 
 interface ITravels {
@@ -38,6 +39,8 @@ interface ITravels {
     driver: string;
     vehicle: string;
     vacant_seats: number;
+    total_seats: number;
+    booked_seats: number;
     status: string;
 };
 
@@ -55,7 +58,7 @@ interface IPassengers {
 const ListActiveTravels = () => {
     const history = useHistory();
 
-    // const [travels, setTravels] = useState<ITravels[]>([]);
+    const [travels, setTravels] = useState<ITravels[]>([]);
 
     const [travelOpt, setTravelOpt] = useState<ITravelOpt[]>([]);
     const [passengers, setPassengers] = useState<IPassengers[]>([]);
@@ -66,45 +69,44 @@ const ListActiveTravels = () => {
 
     const [loaded, setLoaded] = useState(true);
     const [loadedPassenger, setLoadedPassenger] = useState(true);
+    const [displaySelect, setDisplaySelect] = useState(false);
+
+    const [travelId, setTravelId] = useState("");
+
+    const [totalSeats, setTotalSeats] = useState(0);
+    const [bookedSeats, setBookedSeats] = useState(0);
+    const [vacantSeats, setVacantSeats] = useState(0);
 
     const formRef = useRef<FormHandles>(null);
 
-    // useEffect(() => {
-    //     setLoaded(false);
-    //     async function loadTravels(): Promise<void> {
-    //         await api.get('/travels/active')
-    //         .then( response => {
-    //             const travels = response.data.map( ( travel: ITravels ) => ({
-    //                 id: travel.id,
-    //                 departure_date: travel.departure_date,
-    //                 destination: travel.destination,
-    //                 driver: travel.driver,
-    //                 vehicle: travel.vehicle,
-    //                 vacant_seats: travel.vacant_seats,
-    //                 status: travel.status,
-    //             }) );
-    //             setTravels(travels);
-    //             setTimeout(
-    //                 () => 
-    //                 setLoaded(true),
-    //                 1500
-    //             );
-    //         });
-    //     };
-    //     loadTravels();
-    // }, [reload]);
+    React.useEffect(() => {
+        setLoaded(false);
+            async function loadTravel(): Promise<void> {
+                if ( travelId !== ""){
+                    await api.get(`/travels/${travelId}`).then( response => {
+                        setTotalSeats(response.data.travels.total_seats);
+                        setBookedSeats(response.data.travels.booked_seats);
+                        setVacantSeats(response.data.travels.vacant_seats);
+                        setLoaded(true);
+                        setTimeout(
+                            () => 
+                            setLoaded(true),
+                            700
+                        );
+                    });
+                        
+                };
+            };
+            loadTravel();
+    }, [travelId]);
 
-    // const goToEdit = React.useCallback(
-    //     (id: string) => {
-    //         localStorage.setItem('travel_id', id);
-    //         history.push('/edit/travel');
-    //     },
-    //     [
-    //         history
-    //     ],
-    //   );
+    const handleTravelId = React.useCallback((data: NamedNodeMap) => {
+        const usableTravelId = data[2].nodeValue!;
+        setTravelId(usableTravelId);
+    },[]);
 
       const searchTravel = React.useCallback(() => {
+        setDisplaySelect(false);
         setLoaded(false);
         if ( searchParams ) {
             api.get(`/travels/search/${searchParams}`).then(response =>{
@@ -115,11 +117,7 @@ const ListActiveTravels = () => {
                            String(travel.vacant_seats),
             }));
             setTravelOpt(travels);
-            setTimeout(
-                () => 
-                setLoaded(true),
-                1500
-            );
+            setDisplaySelect(true);
         });
         }
     }, [
@@ -139,23 +137,14 @@ const ListActiveTravels = () => {
             setTimeout(
                 () => 
                 setLoadedPassenger(true),
-                750
+                700
             );
             }); 
         }
     }, [
         passengerSearchParams
     ]);
-
-    // const clearSearch = React.useCallback(
-    //         () => {
-    //             setReload(reload + 1);
-    //         },
-    //         [
-    //             reload
-    //         ],
-    //     );
-
+    
     return(
         <MainDiv>
             <Container>
@@ -181,26 +170,27 @@ const ListActiveTravels = () => {
                                     <h4 style={{color: '#FFF'}}>Pesquisar</h4>
                                 </MyButton>
                             </div>
-                            {/* <div style={{width: '20%', marginTop: '3rem'}}>
-                                <MyButton onClick={() => clearSearch()} style={{background: '#f74848'}}>
-                                    <h4 style={{color: '#FFF'}}>Limpar busca</h4>
-                                </MyButton>
-                            </div> */}
                         </ColumnDiv>
-                        <Select 
-                            name="travel"
-                            options={travelOpt}
-                            label="Escolha uma viagem"
-                            onChange={() => history.push('/')}
-                    />
+                        {
+                            displaySelect === true ?
+                            <Select 
+                                name="travel"
+                                options={travelOpt}
+                                label="Escolha uma viagem"
+                                onChange={e => handleTravelId(e.target.attributes)}  
+                            />
+                            :
+                                null
+                        }
                     </Form>
                 </SearchContainer>
                 {
                 loaded === false ?
-                    <Loading />
+                    // <Loading />
+                    null
                 :
                     <PassengersContainer>
-                        <PassengersColumn>
+                        <PassengersColumn style={{paddingLeft: '1rem', paddingRight: '1rem'}}>
                         {
                             loadedPassenger === false ?
                                 <Loading />
@@ -229,10 +219,10 @@ const ListActiveTravels = () => {
                                         <h4 style={{color: '#FFF'}}>
                                             Nome: 
                                             {
-                                                passenger.name
+                                                ' ' + passenger.name
                                             } | CPF: 
                                             {
-                                                passenger.cpf
+                                                ' ' + passenger.cpf
                                             }
                                         </h4>
                                     </PassengerButton>
@@ -244,7 +234,27 @@ const ListActiveTravels = () => {
                         </PassengersColumn>
 
                         <PassengersColumn>
-                            
+                            <SeatsHeader>
+                                <div>
+                                    <h5 style={{color: '#FFF'}}>
+                                        Assentos vagos:
+                                        {
+                                            ' ' + vacantSeats
+                                        } | Assentos reservados:
+                                        {
+                                            ' ' + bookedSeats
+                                        }
+                                    </h5>
+                                </div>
+                                <div>
+                                    <h5 style={{color: '#FFF'}}>
+                                        Total de assentos:
+                                        {
+                                            ' ' + totalSeats
+                                        }
+                                    </h5>
+                                </div>
+                            </SeatsHeader>
                         </PassengersColumn>
                     </PassengersContainer>
                 } 
