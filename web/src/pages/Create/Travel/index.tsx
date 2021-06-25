@@ -69,8 +69,8 @@ interface ICreateTravel {
     status: string;
     observation: string;
     total_seats: number;
-    booked_seats: number;
-    vacant_seats: number;
+    // booked_seats: number;
+    // vacant_seats: number;
 };
 
 const CreateTravel = () => {
@@ -135,15 +135,15 @@ const CreateTravel = () => {
                     departure_hour: Yup.string().required('Informe a hora de partida'),
                     destination: Yup.string().required('Informe o destino'),
                     vehicle: Yup.string().required('Informe o veículo'),
-                    driver: Yup.date().required('Informe o motorista'),
+                    driver: Yup.string().required('Informe o motorista'),
                     return_date: Yup.date().required('Informe a data de retorno'),
                     return_hour: Yup.string().required('Informe a hora de retorno'),
                     daily_payout: Yup.number().required('Informe o valor da diária'),
                     absent_hours: Yup.number().nullable(),
                     status: Yup.string().required('Informe o status da viagem'),
                     total_seats: Yup.number().required('Informe o total de assentos do carro'),
-                    booked_seats: Yup.number().required('Informe o total de assentos reservados do carro'),
-                    vacant_seats: Yup.number().required('Informe o total de assentos vagos do carro'),
+                    // booked_seats: Yup.number().required('Informe o total de assentos reservados do carro'),
+                    // vacant_seats: Yup.number().required('Informe o total de assentos vagos do carro'),
                     observation: Yup.string(),
                 });
 
@@ -250,7 +250,7 @@ const CreateTravel = () => {
                         <div style={{width: '45%'}}>
                             <Input 
                                 name="absent_hours" 
-                                label="Horas ausentes (se houver)" 
+                                label="Horas ausentes" 
                                 type="number"
                                 placeholder="0"
                                 onChange={event => handleAbsentHours(event)}
@@ -268,17 +268,16 @@ const CreateTravel = () => {
                         label="Total de assentos do carro" 
                         type="number"
                     />
-                    <Input 
+                    {/* <Input 
                         name="booked_seats" 
                         label="Total de assentos reservados" 
                         type="number"
-                        
                     />
                     <Input 
                         name="vacant_seats" 
                         label="Total de assentos vagos" 
                         type="number"
-                    />
+                    /> */}
 
                     <Input 
                         name="observation" 

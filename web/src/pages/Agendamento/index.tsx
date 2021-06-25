@@ -77,6 +77,8 @@ const ListActiveTravels = () => {
     const [bookedSeats, setBookedSeats] = useState(0);
     const [vacantSeats, setVacantSeats] = useState(0);
 
+    // const [showModal, setShowModal] = useState(false);
+
     const formRef = useRef<FormHandles>(null);
 
     React.useEffect(() => {
@@ -125,9 +127,9 @@ const ListActiveTravels = () => {
     ]);
 
     const searchPassenger = React.useCallback(() => {
-        setLoadedPassenger(false);
-        if ( passengerSearchParams ) {
-           api.get(`/passengers/${passengerSearchParams}`).then( response => {
+        if ( passengerSearchParams !== "" ) {
+            setLoadedPassenger(false);
+            api.get(`/passengers/${passengerSearchParams}`).then( response => {
             const passengers = response.data.map( ( passenger: IPassengers ) => ({
                 id: passenger.id,
                 name: passenger.name,
@@ -144,7 +146,7 @@ const ListActiveTravels = () => {
     }, [
         passengerSearchParams
     ]);
-    
+
     return(
         <MainDiv>
             <Container>
@@ -201,7 +203,7 @@ const ListActiveTravels = () => {
                                         <div style={{width: '70%'}}>
                                             <Input
                                                 name="passenger_search_param" 
-                                                label="Buscar por"
+                                                label="Buscar por passageiro"
                                                 onChange={event => setPassengerSearchParams(event.target.value)}
                                             />
                                         </div>
@@ -215,17 +217,29 @@ const ListActiveTravels = () => {
 
                                 <div>
                                 {passengers.map( (passenger: IPassengers) => (
-                                    <PassengerButton key={passenger.id}>
-                                        <h4 style={{color: '#FFF'}}>
-                                            Nome: 
-                                            {
-                                                ' ' + passenger.name
-                                            } | CPF: 
-                                            {
-                                                ' ' + passenger.cpf
-                                            }
-                                        </h4>
-                                    </PassengerButton>
+                                    <div>    
+                                        <PassengerButton key={passenger.id} 
+                                            // onClick={() => setShowModal(true)}
+                                        >
+                                            <h4 style={{color: '#FFF'}}>
+                                                Nome: 
+                                                {
+                                                    ' ' + passenger.name
+                                                } | CPF: 
+                                                {
+                                                    ' ' + passenger.cpf
+                                                }
+                                            </h4>
+                                        </PassengerButton>
+                                        
+                                        {/* { 
+                                            showModal === true ? 
+                                                null
+                                            :
+                                                null
+                                        } */}
+
+                                    </div>
                                 ))}
                                 </div>
                             </div>
@@ -255,6 +269,8 @@ const ListActiveTravels = () => {
                                     </h5>
                                 </div>
                             </SeatsHeader>
+
+
                         </PassengersColumn>
                     </PassengersContainer>
                 } 
