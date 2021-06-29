@@ -98,7 +98,7 @@ const CreatePassenger = () => {
                     neighbourhood: Yup.string().required('Informe o bairro do passageiro'),
                     city: Yup.string().required('Informe a cidade'),
                     uf: Yup.string().required('Informe a UF'),
-                    complement: Yup.string().required('Informe o complemento'),
+                    complement: Yup.string(),
                     phone: Yup.string(),
                     cell_phone: Yup.string().required('Informe o número de celular do passageiro'),
                     observation: Yup.string(),

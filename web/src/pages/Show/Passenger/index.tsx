@@ -121,13 +121,13 @@ const ShowPassenger = () => {
                     setCellPhone(response.data.cell_phone);
                     setObservation(response.data.observation);
                 });
+                setTimeout(
+                    () => 
+                    setLoaded(true),
+                    1500
+                );
         }
         loadPassenger();
-        setTimeout(
-            () => 
-            setLoaded(true),
-            1500
-        );
     }, [passenger_id]);
 
     const handleSubmit = useCallback(

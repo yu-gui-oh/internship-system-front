@@ -9,6 +9,7 @@ interface IContentProps {
 }
 
 export const Content = styled.div<IContentProps>`
+  z-index: 1;
   position: fixed;
   background-color: #5b9aa0;
   height: 100vh;

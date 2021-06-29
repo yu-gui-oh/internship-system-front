@@ -4,6 +4,8 @@ import React, {
     useState,
 } from 'react';
 
+import Modal from 'react-modal';
+
 // import * as Yup from 'yup';
 import { FormHandles } from '@unform/core';
 
@@ -30,6 +32,7 @@ import {
     MyButton,
     PassengerButton,
     SeatsHeader,
+    MyModal,
 } from './styles';
 
 interface ITravels {
@@ -78,6 +81,7 @@ const ListActiveTravels = () => {
     const [vacantSeats, setVacantSeats] = useState(0);
 
     // const [showModal, setShowModal] = useState(false);
+    const [questionModalVisible, setQuestionModalVisible] = useState<string | undefined>()
 
     const formRef = useRef<FormHandles>(null);
 
@@ -129,7 +133,7 @@ const ListActiveTravels = () => {
     const searchPassenger = React.useCallback(() => {
         if ( passengerSearchParams !== "" ) {
             setLoadedPassenger(false);
-            api.get(`/passengers/${passengerSearchParams}`).then( response => {
+            api.get(`/passengers/agendamento/${passengerSearchParams}`).then( response => {
             const passengers = response.data.map( ( passenger: IPassengers ) => ({
                 id: passenger.id,
                 name: passenger.name,
@@ -219,9 +223,9 @@ const ListActiveTravels = () => {
                                 {passengers.map( (passenger: IPassengers) => (
                                     <div>    
                                         <PassengerButton key={passenger.id} 
-                                            // onClick={() => setShowModal(true)}
+                                            onClick={() => setQuestionModalVisible("on")}
                                         >
-                                            <h4 style={{color: '#FFF'}}>
+                                            <h4 style={{color: '#FFF'}} >
                                                 Nome: 
                                                 {
                                                     ' ' + passenger.name
@@ -244,7 +248,13 @@ const ListActiveTravels = () => {
                                 </div>
                             </div>
                         }
-                            
+                            <Modal 
+                                isOpen={questionModalVisible !== undefined} 
+                                onRequestClose={() => setQuestionModalVisible(undefined)}
+                                style={{content: { borderRadius: '1rem', height: '20rem', width: '40rem', marginLeft: 'auto', marginRight: 'auto' }}}
+                            >
+                                <button onClick={() => setQuestionModalVisible(undefined)}>Fechar</button>
+                            </Modal>
                         </PassengersColumn>
 
                         <PassengersColumn>
