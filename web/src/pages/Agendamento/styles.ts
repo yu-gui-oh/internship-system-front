@@ -48,6 +48,19 @@ export const Container = styled.div`
     padding: 1rem;
 `;
 
+export const AddPassengerContainer = styled.div`
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: flex-start;
+
+    padding: 2rem;
+    padding-top: 0;
+`;
+
 export const SearchContainer = styled.div`
     height: 12.5rem;
     width: 80%;

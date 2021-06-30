@@ -6,7 +6,7 @@ import React, {
 
 import Modal from 'react-modal';
 
-// import * as Yup from 'yup';
+import * as Yup from 'yup';
 import { FormHandles } from '@unform/core';
 
 import api from '../../services/api';
@@ -25,6 +25,7 @@ import {
     FormContainer,
     SearchContainer,
     PassengersContainer,
+    AddPassengerContainer,
     PassengersColumn,
     Title,
     MyFiSearch,
@@ -58,6 +59,14 @@ interface IPassengers {
     cpf: string;
 };
 
+interface ITravelPassenger {
+    travel_id: string;
+    passenger_id: string;
+    destination: string;
+    observation: string;
+    companion: string;
+};
+
 const ListActiveTravels = () => {
     const history = useHistory();
 
@@ -75,15 +84,27 @@ const ListActiveTravels = () => {
     const [displaySelect, setDisplaySelect] = useState(false);
 
     const [travelId, setTravelId] = useState("");
+    const [addedPassenger, setAddedPassenger] = useState<IPassengers>();
 
     const [totalSeats, setTotalSeats] = useState(0);
     const [bookedSeats, setBookedSeats] = useState(0);
     const [vacantSeats, setVacantSeats] = useState(0);
 
     // const [showModal, setShowModal] = useState(false);
-    const [questionModalVisible, setQuestionModalVisible] = useState<string | undefined>()
+    const [modalVisible, setModalVisible] = useState<string | undefined>()
+
+    const CompanionOpt =[
+        { value: 'false', label: 'NÃO' },
+        { value: 'true', label: 'SIM' },
+    ];
 
     const formRef = useRef<FormHandles>(null);
+
+    React.useEffect(() => {
+        if ( addedPassenger?.id ) {
+            setModalVisible("on");
+        }
+    },[addedPassenger])
 
     React.useEffect(() => {
         setLoaded(false);
@@ -151,6 +172,40 @@ const ListActiveTravels = () => {
         passengerSearchParams
     ]);
 
+    const addPassengerToTravel = React.useCallback(
+        async (data: ITravelPassenger) => {
+            try {
+                formRef.current!.setErrors({});
+
+                const schema = Yup.object().shape({
+                    travel_id: Yup.string().required(),
+                    passenger_id: Yup.string().required(),
+                    companion: Yup.string().required(),
+                    destination: Yup.string().required(),
+                    observation: Yup.string(),
+                });
+                
+                if ( addedPassenger ) {
+                    data.travel_id = travelId;
+                    data.passenger_id = addedPassenger.id;
+                }
+
+                await schema.validate(data, {
+                    abortEarly: false,
+                });
+
+                await api.post('/new/travel/passengers', data);
+                
+                setModalVisible(undefined);
+            } catch (err) {
+                alert('Houve um erro ao adicionar passageiro. Favor tentar novamente');
+            }
+        }, 
+        [
+            addedPassenger,
+            travelId
+        ]);
+
     return(
         <MainDiv>
             <Container>
@@ -192,7 +247,6 @@ const ListActiveTravels = () => {
                 </SearchContainer>
                 {
                 loaded === false ?
-                    // <Loading />
                     null
                 :
                     <PassengersContainer>
@@ -223,38 +277,100 @@ const ListActiveTravels = () => {
                                 {passengers.map( (passenger: IPassengers) => (
                                     <div>    
                                         <PassengerButton key={passenger.id} 
-                                            onClick={() => setQuestionModalVisible("on")}
+                                            onClick={() => {
+                                                setAddedPassenger({
+                                                    id: passenger.id,
+                                                    name: passenger.name,
+                                                    cpf: passenger.cpf
+                                                })
+                                            }}
                                         >
                                             <h4 style={{color: '#FFF'}} >
                                                 Nome: 
                                                 {
                                                     ' ' + passenger.name
-                                                } | CPF: 
+                                                }
+                                            </h4>
+                                            <h4 style={{color: '#FFF'}} >
+                                                CPF: 
                                                 {
                                                     ' ' + passenger.cpf
                                                 }
                                             </h4>
                                         </PassengerButton>
-                                        
-                                        {/* { 
-                                            showModal === true ? 
-                                                null
-                                            :
-                                                null
-                                        } */}
-
                                     </div>
                                 ))}
                                 </div>
                             </div>
                         }
                             <Modal 
-                                isOpen={questionModalVisible !== undefined} 
-                                onRequestClose={() => setQuestionModalVisible(undefined)}
-                                style={{content: { borderRadius: '1rem', height: '20rem', width: '40rem', marginLeft: 'auto', marginRight: 'auto' }}}
-                            >
-                                <button onClick={() => setQuestionModalVisible(undefined)}>Fechar</button>
-                            </Modal>
+                                            isOpen={modalVisible !== undefined} 
+                                            onRequestClose={() => setModalVisible(undefined)}
+                                            style={{content: { 
+                                                borderRadius: '1rem', 
+                                                height: '30rem', 
+                                                width: '40rem', 
+                                                marginLeft: 'auto', 
+                                                marginRight: 'auto',
+                                            }}}
+                                        >
+                                            <AddPassengerContainer>
+                                                <Form 
+                                                    ref={formRef} 
+                                                    onSubmit={addPassengerToTravel} //add passageiro aqui
+                                                >
+                                                    <h1>
+                                                        {addedPassenger?.name}
+                                                    </h1>
+                                                    <h4>
+                                                        CPF: {' ' + addedPassenger?.cpf}
+                                                    </h4>
+                                                    <ColumnDiv style={{marginBottom: '1rem'}}>
+                                                        <div style={{width: '48%'}}>
+                                                            <Input
+                                                                name="destination" 
+                                                                label="Destino"
+                                                            />
+                                                        </div>
+                                                        <div style={{width: '48%'}}>
+                                                            <Input
+                                                                name="observation" 
+                                                                label="Observação (opcional)"
+                                                            />
+                                                        </div>
+                                                    </ColumnDiv>
+                                                    <ColumnDiv style={{marginBottom: '4rem'}}>
+                                                        <div style={{width: '75%'}}>
+
+                                                        </div>
+                                                        <div style={{width: '30%'}}>
+                                                        <Select 
+                                                            name="companion"
+                                                            options={CompanionOpt}
+                                                            label="Acompanhante"
+                                                        />
+                                                        </div>
+                                                    </ColumnDiv>
+                                                    <ColumnDiv>
+                                                        <div style={{width: '48%'}}>
+                                                            <MyButton 
+                                                                type="submit"
+                                                            >
+                                                                Adicionar
+                                                            </MyButton>
+                                                        </div>
+                                                        <div style={{width: '48%'}}>
+                                                            <MyButton 
+                                                                style={{background: '#f74848'}}
+                                                                onClick={() => setModalVisible(undefined)}
+                                                            >
+                                                                Cancelar
+                                                            </MyButton>
+                                                        </div>
+                                                    </ColumnDiv>
+                                                </Form>
+                                            </AddPassengerContainer>
+                                        </Modal>
                         </PassengersColumn>
 
                         <PassengersColumn>
