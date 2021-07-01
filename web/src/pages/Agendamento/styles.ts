@@ -2,9 +2,7 @@ import styled from  'styled-components';
 
 import Table from '@material-ui/core/Table';
 
-import Modal from 'react-modal';
-
-import { FiSearch, FiUsers } from 'react-icons/fi';
+import { FiSearch, FiUsers, FiCheckCircle, FiX, FiUserX } from 'react-icons/fi';
 
 import Button from '../../components/Button';
 
@@ -204,12 +202,20 @@ export const MyFiUsers = styled(FiUsers)`
   font-weight: bold;
 `;
 
-export const MyModal = styled(Modal)`
-    content: {
-        /* height: 20rem;
-        width: 20rem; */
+export const MyFiUsersX = styled(FiUserX)`
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+`;
 
-        border-radius: 1rem;
-    }
-    
+export const MyFiCheck = styled(FiCheckCircle)`
+  color: #0f0;
+  font-size: 1.2rem;
+  font-weight: bold;
+`;
+
+export const MyFiX = styled(FiX)`
+  color: #f00;
+  font-size: 1.2rem;
+  font-weight: bold;
 `;
