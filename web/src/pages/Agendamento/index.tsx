@@ -16,6 +16,7 @@ import api from '../../services/api';
 import Input from '../../components/Input';
 import Select from '../../components/Select';
 import Loading from '../../components/Loading';
+import PassengerButton from '../../components/PassengerButton';
 
 import {
     Form,
@@ -28,7 +29,6 @@ import {
     AddPassengerContainer,
     PassengersColumn,
     Title,
-    PassengerButton,
     SeatsHeader,
     MyFiSearch,
     // MyFiUsers,
@@ -79,6 +79,10 @@ interface IAddedPassenger {
     observation: string;
 };
 
+interface IAddedId {
+    id: string;
+};
+
 const ListActiveTravels = () => {
     // const history = useHistory();
 
@@ -87,7 +91,7 @@ const ListActiveTravels = () => {
     const [travelOpt, setTravelOpt] = useState<ITravelOpt[]>([]);
     const [passengers, setPassengers] = useState<IPassengers[]>([]);
     const [passengersInTravel, setPassengersInTravel] = useState<IAddedPassenger[]>([]);
-    const [passengerIdsArray, setPassengersIdsArray] = useState<String[]>([]);
+    const [passengerIdsArray, setPassengersIdsArray] = useState<IAddedId[]>([]);
 
     // const [reload, setReload] = useState(0);
     const [searchParams, setSearchParams] = useState("");
@@ -101,7 +105,7 @@ const ListActiveTravels = () => {
     
     const [passengerToAdd, setPassengerToAdd] = useState<IPassengers>();
     const [passengersUpdate, setPassengersUpdate] = useState(true);
-    const [alreadyAdded, setAlreadyAdded] = useState(false);
+    // const [alreadyAdded, setAlreadyAdded] = useState(false);
 
     const [totalSeats, setTotalSeats] = useState(0);
     const [bookedSeats, setBookedSeats] = useState(0);
@@ -181,7 +185,7 @@ const ListActiveTravels = () => {
     ]);
 
     const searchPassenger = React.useCallback(() => {
-        setAlreadyAdded(false);
+        // setAlreadyAdded(false);
         if ( passengerSearchParams !== "" ) {
             setLoadedPassenger(false);
             api.get(`/passengers/agendamento/${passengerSearchParams}`).then( response => {
@@ -306,31 +310,43 @@ const ListActiveTravels = () => {
 
                                 <div>
                                 {passengers.map( (passenger: IPassengers) => (
-                                    
-                                            <div key={passenger.id}>    
-                                                <PassengerButton key={passenger.id} 
-                                                    onClick={() => {
-                                                        setPassengerToAdd({
-                                                            id: passenger.id,
-                                                            name: passenger.name,
-                                                            cpf: passenger.cpf
-                                                        })
-                                                    }}
-                                                >
-                                                    <h4 style={{color: '#FFF'}} >
-                                                        Nome: 
-                                                        {
-                                                            ' ' + passenger.name
-                                                        }
-                                                    </h4>
-                                                    <h4 style={{color: '#FFF'}} >
-                                                        CPF: 
-                                                        {
-                                                            ' ' + passenger.cpf
-                                                        }
-                                                    </h4>
-                                                </PassengerButton>
-                                            </div>
+                                    <div key={passenger.id}>
+                                        { passengerIdsArray.map((passengerId: IAddedId) => {
+                                            // if ( passenger.id !== passengerId.id ) {
+                                                <div key={passenger.id}>    
+                                                    {
+                                                        passenger.id === passengerId.id ?
+                                                            null
+                                                        :
+                                                        <PassengerButton key={passenger.id} 
+                                                            onClick={() => {
+                                                                setPassengerToAdd({
+                                                                    id: passenger.id,
+                                                                    name: passenger.name,
+                                                                    cpf: passenger.cpf
+                                                                })
+                                                            }}
+                                                        >
+                                                            <h4 style={{color: '#FFF'}} >
+                                                                Nome: 
+                                                                {
+                                                                    ' ' + passenger.name
+                                                                }
+                                                            </h4>
+                                                            <h4 style={{color: '#FFF'}} >
+                                                                CPF: 
+                                                                {
+                                                                    ' ' + passenger.cpf
+                                                                }
+                                                            </h4>
+                                                        </PassengerButton>
+                                                    }
+                                                    
+                                                </div>
+                                            // }
+                                        })}
+                                            
+                                    </div>
                                 ))}
                                 </div>
                             </div>

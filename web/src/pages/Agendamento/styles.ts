@@ -180,16 +180,6 @@ export const MyButton = styled(Button)`
   }
 `;
 
-export const PassengerButton = styled(Button)`
-    margin-top: 0.5rem;
-    background-color: #35567d;
-
-    &:hover {
-        cursor: pointer;
-        background-color: #555f8f;
-  }
-`;
-
 export const MyFiSearch = styled(FiSearch)`
   color: #fff;
   font-size: 1.5rem;
