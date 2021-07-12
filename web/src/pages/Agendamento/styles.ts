@@ -2,7 +2,7 @@ import styled from  'styled-components';
 
 import Table from '@material-ui/core/Table';
 
-import { FiSearch, FiUsers, FiCheckCircle, FiX, FiUserX } from 'react-icons/fi';
+import { FiSearch, FiUsers, FiCheckCircle, FiX, FiUserX, FiArrowLeft } from 'react-icons/fi';
 
 import Button from '../../components/Button';
 
@@ -208,4 +208,12 @@ export const MyFiX = styled(FiX)`
   color: #f00;
   font-size: 1.2rem;
   font-weight: bold;
+`;
+
+export const MyFiArrowLeft = styled(FiArrowLeft)`
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: bold;
+
+  padding-left: 0.5rem;
 `;

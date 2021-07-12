@@ -36,6 +36,7 @@ import {
     // MyModal,
     MyFiCheck,
     MyFiX,
+    MyFiArrowLeft,
     // MyFiUsersX,
 } from './styles';
 
@@ -79,8 +80,9 @@ interface IAddedPassenger {
     observation: string;
 };
 
-interface IAddedId {
-    id: string;
+interface IRemovePassenger {
+    passenger_id: string;
+    travel_id: string;
 };
 
 const ListActiveTravels = () => {
@@ -91,7 +93,8 @@ const ListActiveTravels = () => {
     const [travelOpt, setTravelOpt] = useState<ITravelOpt[]>([]);
     const [passengers, setPassengers] = useState<IPassengers[]>([]);
     const [passengersInTravel, setPassengersInTravel] = useState<IAddedPassenger[]>([]);
-    const [passengerIdsArray, setPassengersIdsArray] = useState<IAddedId[]>([]);
+    // const [passengerIdsArray, setPassengersIdsArray] = useState<IAddedId[]>([]);
+    const [passengerIdsArray, setPassengersIdsArray] = useState<String[]>([]);
 
     // const [reload, setReload] = useState(0);
     const [searchParams, setSearchParams] = useState("");
@@ -104,6 +107,7 @@ const ListActiveTravels = () => {
     const [travelId, setTravelId] = useState("");
     
     const [passengerToAdd, setPassengerToAdd] = useState<IPassengers>();
+    const [passengerToRemove, setPassengerToRemove] = useState<IAddedPassenger>();
     const [passengersUpdate, setPassengersUpdate] = useState(true);
     // const [alreadyAdded, setAlreadyAdded] = useState(false);
 
@@ -112,7 +116,12 @@ const ListActiveTravels = () => {
     const [vacantSeats, setVacantSeats] = useState(0);
 
     // const [showModal, setShowModal] = useState(false);
-    const [modalVisible, setModalVisible] = useState<string | undefined>()
+    const [modalVisible, setModalVisible] = useState<string | undefined>();
+    const [removePassengerModal, setRemovePassengerModal] = useState<string | undefined>();
+
+    //Remove passenger
+    const [removeDestination, setRemoveDestination] = useState("");
+    const [removeObservation, setRemoveObservation] = useState("");
 
     const CompanionOpt =[
         { value: 'false', label: 'NÃO' },
@@ -125,7 +134,13 @@ const ListActiveTravels = () => {
         if ( passengerToAdd?.id ) {
             setModalVisible("on");
         }
-    },[passengerToAdd])
+    },[passengerToAdd]);
+
+    React.useEffect(() => {
+        if ( passengerToRemove?.id ) {
+            setRemovePassengerModal("on");
+        }
+    },[passengerToRemove]);
 
     React.useEffect(() => {
         setLoaded(false);
@@ -165,7 +180,7 @@ const ListActiveTravels = () => {
         setTravelId(usableTravelId);
     },[]);
 
-      const searchTravel = React.useCallback(() => {
+    const searchTravel = React.useCallback(() => {
         setDisplaySelect(false);
         setLoaded(false);
         if ( searchParams ) {
@@ -206,6 +221,38 @@ const ListActiveTravels = () => {
         passengerSearchParams
     ]);
 
+    const removePassengerFromTravel = React.useCallback(
+        async (data: IRemovePassenger) => {
+            try {
+                formRef.current!.setErrors({});
+
+                const schema = Yup.object().shape({
+                    travel_id: Yup.string().required(),
+                    passenger_id: Yup.string().required(),
+                });
+
+                if ( passengerToRemove ) {
+                    data.travel_id = travelId;
+                    data.passenger_id = passengerToRemove.id;
+                }
+
+                await schema.validate(data, {
+                    abortEarly: false,
+                });
+
+                await api.post('/delete/travel/passengers', data);
+                
+                setRemovePassengerModal(undefined);
+                setPassengersUpdate(true);
+            } catch ( err ) {
+                alert('Houve um erro ao remover passageiro. Favor tentar novamente');
+            }
+        }, [
+            passengerToRemove,
+            travelId
+        ]
+    );
+
     const addPassengerToTravel = React.useCallback(
         async (data: ITravelPassenger) => {
             try {
@@ -236,10 +283,10 @@ const ListActiveTravels = () => {
                 alert('Houve um erro ao adicionar passageiro. Favor tentar novamente');
             }
         }, 
-        [
-            passengerToAdd,
-            travelId,
-        ]);
+    [
+        passengerToAdd,
+        travelId,
+    ]);
 
     return(
         <MainDiv>
@@ -310,43 +357,73 @@ const ListActiveTravels = () => {
 
                                 <div>
                                 {passengers.map( (passenger: IPassengers) => (
-                                    <div key={passenger.id}>
-                                        { passengerIdsArray.map((passengerId: IAddedId) => {
-                                            // if ( passenger.id !== passengerId.id ) {
-                                                <div key={passenger.id}>    
-                                                    {
-                                                        passenger.id === passengerId.id ?
-                                                            null
-                                                        :
-                                                        <PassengerButton key={passenger.id} 
-                                                            onClick={() => {
-                                                                setPassengerToAdd({
-                                                                    id: passenger.id,
-                                                                    name: passenger.name,
-                                                                    cpf: passenger.cpf
-                                                                })
-                                                            }}
-                                                        >
-                                                            <h4 style={{color: '#FFF'}} >
-                                                                Nome: 
-                                                                {
-                                                                    ' ' + passenger.name
-                                                                }
-                                                            </h4>
-                                                            <h4 style={{color: '#FFF'}} >
-                                                                CPF: 
-                                                                {
-                                                                    ' ' + passenger.cpf
-                                                                }
-                                                            </h4>
-                                                        </PassengerButton>
-                                                    }
+                                    // <div key={passenger.id}>
+                                    //     {
+                                    //         passengerIdsArray.includes(passenger.id) ?
+                                    //             null
+                                    //         :
+                                                <div key={passenger.id}>
+                                                    <PassengerButton key={passenger.id} 
+                                                                onClick={() => {
+                                                                    setPassengerToAdd({
+                                                                        id: passenger.id,
+                                                                        name: passenger.name,
+                                                                        cpf: passenger.cpf
+                                                                    })
+                                                                }}
+                                                            >
+                                                                <h4 style={{color: '#FFF'}} >
+                                                                    Nome: 
+                                                                    {
+                                                                        ' ' + passenger.name
+                                                                    }
+                                                                </h4>
+                                                                <h4 style={{color: '#FFF'}} >
+                                                                    CPF: 
+                                                                    {
+                                                                        ' ' + passenger.cpf
+                                                                    }
+                                                                </h4>
+                                                            </PassengerButton>
+                                                </div>  
+                                        // }
+                                //         {/* { passengerIdsArray.map((passengerId: IAddedId) => (
+                                //             // { passengerIdsArray.forEach(index) => {
+                                //                 <div key={passenger.id}>    
+                                //                     {
+                                //                         passenger.id === passengerId.id ?
+                                //                         //      passenger.id === passengerIdsArray[index] ?
+                                //                             null
+                                //                         :
+                                //                             <PassengerButton key={passenger.id} 
+                                //                                 onClick={() => {
+                                //                                     setPassengerToAdd({
+                                //                                         id: passenger.id,
+                                //                                         name: passenger.name,
+                                //                                         cpf: passenger.cpf
+                                //                                     })
+                                //                                 }}
+                                //                             >
+                                //                                 <h4 style={{color: '#FFF'}} >
+                                //                                     Nome: 
+                                //                                     {
+                                //                                         ' ' + passenger.name
+                                //                                     }
+                                //                                 </h4>
+                                //                                 <h4 style={{color: '#FFF'}} >
+                                //                                     CPF: 
+                                //                                     {
+                                //                                         ' ' + passenger.cpf
+                                //                                     }
+                                //                                 </h4>
+                                //                             </PassengerButton>
+                                //                     }
                                                     
-                                                </div>
-                                            // }
-                                        })}
+                                //                 </div>
+                                //             // }
+                                // ))} */}
                                             
-                                    </div>
+                                    // </div>
                                 ))}
                                 </div>
                             </div>
@@ -382,17 +459,6 @@ const ListActiveTravels = () => {
                                                 />
                                             </div>
                                             <div style={{width: '48%'}}>
-                                                <Input
-                                                    name="observation" 
-                                                    label="Observação (opcional)"
-                                                />
-                                            </div>
-                                        </ColumnDiv>
-                                        <ColumnDiv style={{marginBottom: '4rem'}}>
-                                            <div style={{width: '75%'}}>
-                                                {/*Espaçamento*/}
-                                            </div>
-                                            <div style={{width: '30%'}}>
                                                 <Select 
                                                     name="companion"
                                                     options={CompanionOpt}
@@ -400,7 +466,11 @@ const ListActiveTravels = () => {
                                                 />
                                             </div>
                                         </ColumnDiv>
-                                        <ColumnDiv>
+                                        <Input
+                                            name="observation" 
+                                            label="Observação (opcional)"
+                                        />
+                                        <ColumnDiv style={{marginTop: '2rem'}}>
                                             <div style={{width: '48%'}}>
                                                 <MyButton 
                                                     type="submit"
@@ -451,7 +521,16 @@ const ListActiveTravels = () => {
                                     style={{width: '100%', paddingLeft: '0.5rem', paddingRight: '0.5rem'}}
                                 >    
                                     <PassengerButton key={passenger.id} 
-                                        
+                                        onClick={() => {
+                                            setPassengerToRemove({
+                                                id: passenger.id,
+                                                name: passenger.name,
+                                                cpf: passenger.cpf,
+                                                companion: String(passenger.companion),
+                                                destination: passenger.destination,
+                                                observation: passenger.observation
+                                            })
+                                        }}
                                     >
                                         <h4 style={{color: '#FFF'}} >
                                             Nome: 
@@ -482,6 +561,96 @@ const ListActiveTravels = () => {
                                                 </h4>
                                         }
                                     </PassengerButton>
+                                    <Modal 
+                                        isOpen={removePassengerModal !== undefined} 
+                                        onRequestClose={() => setRemovePassengerModal(undefined)}
+                                        ariaHideApp={false}
+                                        style={{content: { 
+                                            borderRadius: '1rem', 
+                                            height: '30rem', 
+                                            width: '40rem', 
+                                            marginLeft: 'auto', 
+                                            marginRight: 'auto',
+                                        }}}
+                                    >
+                                        <AddPassengerContainer>
+                                            <Form 
+                                                ref={formRef} 
+                                                onSubmit={addPassengerToTravel}
+                                            >
+                                                <h1>
+                                                    { passengerToRemove?.name }
+                                                </h1>
+                                                <h4>
+                                                    CPF: { ' ' + passengerToRemove?.cpf }
+                                                </h4>
+                                                <ColumnDiv style={{marginBottom: '1rem'}}>
+                                                    <div style={{width: '48%'}}>
+                                                        <Input
+                                                            name="destination" 
+                                                            label="Destino"
+                                                            value={passengerToRemove?.destination}
+                                                            onChange={e => setRemoveDestination(e.target.value)}
+                                                        />
+                                                    </div>
+                                                    <div style={{width: '48%'}}>
+                                                        <Input
+                                                            name="observation" 
+                                                            label="Observação (opcional)"
+                                                            value={passengerToRemove?.observation}
+                                                            onChange={e => setRemoveObservation(e.target.value)}
+                                                        />
+                                                    </div>
+                                                </ColumnDiv>
+                                                <ColumnDiv style={{marginBottom: '4rem'}}>
+                                                    <div style={{width: '75%'}}>
+                                                        {/*Espaçamento*/}
+                                                    </div>
+                                                    <div style={{width: '30%'}}>
+                                                        <Select 
+                                                            name="companion"
+                                                            options={CompanionOpt}
+                                                            defaultOption={passengerToRemove?.companion}
+                                                            label="Acompanhante"
+                                                        />
+                                                    </div>
+                                                </ColumnDiv>
+                                                <ColumnDiv>
+                                                    <div style={{width: '30%'}}>
+                                                        <MyButton 
+                                                            type="submit"
+                                                        >
+                                                            Salvar
+                                                        </MyButton>
+                                                    </div>
+                                                    <div style={{width: '30%'}}>
+                                                        <MyButton 
+                                                            style={{background: '#f74848'}}
+                                                            onClick={() => removePassengerFromTravel({
+                                                                travel_id: travelId,
+                                                                passenger_id: passenger.id
+                                                            })}
+                                                        >
+                                                            Remover da viagem
+                                                        </MyButton>
+                                                    </div>
+                                                    <div style={{width: '30%'}}>
+                                                            <MyButton 
+                                                                style={{background: '#35567d'}}
+                                                                onClick={() => setRemovePassengerModal(undefined)}
+                                                            >
+                                                                <ColumnDiv>
+                                                                    <div style={{paddingLeft: '30%'}}>
+                                                                        Voltar
+                                                                    </div>
+                                                                    <MyFiArrowLeft />
+                                                                </ColumnDiv>
+                                                            </MyButton>
+                                                    </div>
+                                                </ColumnDiv>
+                                            </Form>
+                                        </AddPassengerContainer>
+                                    </Modal>
                                 </div>
                             ))}
 
