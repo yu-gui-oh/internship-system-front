@@ -37,10 +37,10 @@ import {
 interface ITravels {
     id: string;
     departure_date: string;
+    departure_hour: string;
     destination: string;
     driver: string;
     vehicle: string;
-    vacant_seats: number;
     status: string;
 };
 
@@ -64,10 +64,10 @@ const ListActiveTravels = () => {
                 const travels = response.data.map( ( travel: ITravels ) => ({
                     id: travel.id,
                     departure_date: travel.departure_date,
+                    departure_hour: travel.departure_hour,
                     destination: travel.destination,
                     driver: travel.driver,
                     vehicle: travel.vehicle,
-                    vacant_seats: travel.vacant_seats,
                     status: travel.status,
                 }) );
                 setTravels(travels);
@@ -98,10 +98,10 @@ const ListActiveTravels = () => {
             const travels = response.data.map( ( travel: ITravels ) => ({
                 id: travel.id,
                 departure_date: travel.departure_date,
+                departure_hour: travel.departure_hour,
                 destination: travel.destination,
                 driver: travel.driver,
                 vehicle: travel.vehicle,
-                vacant_seats: travel.vacant_seats,
                 status: travel.status,
             }) );
             setTravels(travels);
@@ -168,10 +168,10 @@ const ListActiveTravels = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="center" > Data da viagem </TableCell>
+                                    <TableCell align="center" > Hora de saída </TableCell>
                                     <TableCell align="center" > Destino </TableCell>
                                     <TableCell align="center" > Motorista </TableCell>
                                     <TableCell align="center" > Veículo </TableCell>
-                                    <TableCell align="center" > Assentos vagos </TableCell>
                                     <TableCell align="center" > Detalhes </TableCell>
                                     <TableCell align="center" > Passageiros na viagem </TableCell>
                                 </TableRow>
@@ -183,6 +183,9 @@ const ListActiveTravels = () => {
                                         {new Date(travel.departure_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
                                     </TableCell>
                                     <TableCell align="center" >
+                                        {travel.departure_hour}
+                                    </TableCell>
+                                    <TableCell align="center" >
                                         {travel.destination}
                                     </TableCell>
                                     <TableCell align="center" >
@@ -190,9 +193,6 @@ const ListActiveTravels = () => {
                                     </TableCell>
                                     <TableCell align="center" >
                                         {travel.vehicle}
-                                    </TableCell>
-                                    <TableCell align="center" >
-                                        {travel.vacant_seats}
                                     </TableCell>
                                     <TableCell align="center" >
                                         <MyButton type="submit" onClick={() => goToEdit(travel.id)}>

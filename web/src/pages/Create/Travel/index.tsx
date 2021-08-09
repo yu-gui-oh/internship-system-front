@@ -17,6 +17,8 @@ import Input from '../../../components/Input';
 import Select from '../../../components/Select';
 import Button from '../../../components/Button';
 
+import SelectSearch from 'react-select-search';
+
 import {
     Form,
     MainDiv,
@@ -29,6 +31,7 @@ import {
 interface IVehicle {
     id: string;
     vehicle: string;
+    plate: string;
 }
 
 interface IVehicleOpt {
@@ -93,7 +96,7 @@ const CreateTravel = () => {
             await api.get('/vehicles').then(response =>{
                 const vehicles = response.data.map( (vehicle: IVehicle) => ({
                     value: "vehicle_" + String(vehicle.id),
-                    label: String(vehicle.vehicle),
+                    label: String(vehicle.vehicle) + ' ' + String(vehicle.plate),
                 }));
                 setVehicleOpt(vehicles);
             });
@@ -130,17 +133,16 @@ const CreateTravel = () => {
                 formRef.current!.setErrors({});
 
                 const schema = Yup.object().shape({
-                    // departure_date: Yup.date().required('Informe a data de partida'),
-                    departure_date: Yup.string().required('Informe a data de partida'),
-                    departure_hour: Yup.string().required('Informe a hora de partida'),
+                    departure_date: Yup.string(),
+                    departure_hour: Yup.string(),
                     destination: Yup.string().required('Informe o destino'),
                     vehicle: Yup.string().required('Informe o veículo'),
                     driver: Yup.string().required('Informe o motorista'),
-                    return_date: Yup.date().required('Informe a data de retorno'),
-                    return_hour: Yup.string().required('Informe a hora de retorno'),
-                    daily_payout: Yup.number().required('Informe o valor da diária'),
+                    return_date: Yup.date(),
+                    return_hour: Yup.string(),
+                    daily_payout: Yup.number(),
                     absent_hours: Yup.number().nullable(),
-                    status: Yup.string().required('Informe o status da viagem'),
+                    status: Yup.string(),
                     total_seats: Yup.number().required('Informe o total de assentos do carro'),
                     // booked_seats: Yup.number().required('Informe o total de assentos reservados do carro'),
                     // vacant_seats: Yup.number().required('Informe o total de assentos vagos do carro'),

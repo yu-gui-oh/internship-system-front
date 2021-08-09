@@ -186,16 +186,16 @@ const ShowTravel = () => {
                     departure_date: Yup.string().required('Informe a data de partida'),
                     departure_hour: Yup.string(),
                     destination: Yup.string().required('Informe o destino'),
-                    vehicle: Yup.string().required('Informe o veículo'),
-                    driver: Yup.date().required('Informe o motorista'),
+                    vehicle: Yup.string(),
+                    driver: Yup.string(),
                     return_date: Yup.date(),
                     return_hour: Yup.string(),
-                    daily_payout: Yup.number().required('Informe o valor da diária'),
+                    daily_payout: Yup.number(),
                     absent_hours: Yup.number().nullable(),
                     status: Yup.string().required('Informe o status da viagem'),
-                    total_seats: Yup.number().required('Informe o total de assentos do carro'),
-                    booked_seats: Yup.number().required('Informe o total de assentos reservados do carro'),
-                    vacant_seats: Yup.number().required('Informe o total de assentos vagos do carro'),
+                    total_seats: Yup.number(),
+                    booked_seats: Yup.number(),
+                    vacant_seats: Yup.number(),
                     observation: Yup.string(),
                 });
                 
@@ -221,7 +221,7 @@ const ShowTravel = () => {
                 await api.post(`/edit/travel/${travel_id}`, data);
 
                 alert('Viagem editada com sucesso!');
-                history.push('/list/travels');
+                history.push('/list/travels/active');
             } catch (err) {
                 alert('Houve um erro ao editar viagem. Verifique se todos os campos foram preenchidos corretamente.');
             }
@@ -242,7 +242,7 @@ const ShowTravel = () => {
     }
 
     const goToLists = React.useCallback(() => {
-            history.push('/list/travels');
+            history.push('/list/travels/active');
         },
         [
             history
@@ -393,8 +393,20 @@ const ShowTravel = () => {
                         readOnly={readOnlyStatus}
                     />
                     {
-                        readOnlyStatus === false ? 
-                            <Button type="submit">Salvar</Button>
+                        readOnlyStatus === false ?
+                            <ColumnDiv>
+                                <div style={{width: '45%'}}>
+                                    <Button type="submit">Salvar</Button>
+                                </div>
+                                <div style={{width: '45%'}}>
+                                    <Button 
+                                        onClick={() => goToLists()}
+                                        style={{background: '#f74848'}}
+                                    >
+                                        Voltar
+                                    </Button>
+                                </div>
+                            </ColumnDiv>
                         :
                             <Button 
                                 onClick={() => goToLists()}

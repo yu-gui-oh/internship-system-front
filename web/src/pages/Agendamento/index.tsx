@@ -37,7 +37,7 @@ import {
     MyFiCheck,
     MyFiX,
     MyFiArrowLeft,
-    // MyFiUsersX,
+    MyFiUsersX,
 } from './styles';
 
 interface ITravels {
@@ -68,7 +68,7 @@ interface ITravelPassenger {
     passenger_id: string;
     destination: string;
     observation: string;
-    companion: string;
+    companion: boolean;
 };
 
 interface IAddedPassenger {
@@ -164,6 +164,7 @@ const ListActiveTravels = () => {
                 if ( passengersUpdate === true ) {
                     await api.get(`/list/travel/passengers/${travelId}`).then( response => {
                         setPassengersInTravel(response.data.passengersArray);
+                        // console.log(response.data.passengersArray);
                         setPassengersIdsArray(response.data.idsArray);
                         setPassengersUpdate(false);
                     });
@@ -244,6 +245,8 @@ const ListActiveTravels = () => {
                 
                 setRemovePassengerModal(undefined);
                 setPassengersUpdate(true);
+
+                alert('Passageiro removido com sucesso!');
             } catch ( err ) {
                 alert('Houve um erro ao remover passageiro. Favor tentar novamente');
             }
@@ -261,7 +264,7 @@ const ListActiveTravels = () => {
                 const schema = Yup.object().shape({
                     travel_id: Yup.string().required(),
                     passenger_id: Yup.string().required(),
-                    companion: Yup.string().required(),
+                    companion: Yup.boolean().required(),
                     destination: Yup.string().required(),
                     observation: Yup.string(),
                 });
@@ -269,6 +272,8 @@ const ListActiveTravels = () => {
                 if ( passengerToAdd ) {
                     data.travel_id = travelId;
                     data.passenger_id = passengerToAdd.id;
+                    // console.log(data.companion);
+                    // data.companion = Boolean(data.companion);
                 }
 
                 await schema.validate(data, {
@@ -279,6 +284,8 @@ const ListActiveTravels = () => {
                 
                 setModalVisible(undefined);
                 setPassengersUpdate(true);
+
+                alert('Passageiro adicionado com sucesso!');
             } catch (err) {
                 alert('Houve um erro ao adicionar passageiro. Favor tentar novamente');
             }
@@ -520,47 +527,91 @@ const ListActiveTravels = () => {
                                     key={passenger.id} 
                                     style={{width: '100%', paddingLeft: '0.5rem', paddingRight: '0.5rem'}}
                                 >    
-                                    <PassengerButton key={passenger.id} 
-                                        onClick={() => {
-                                            setPassengerToRemove({
-                                                id: passenger.id,
-                                                name: passenger.name,
-                                                cpf: passenger.cpf,
-                                                companion: String(passenger.companion),
-                                                destination: passenger.destination,
-                                                observation: passenger.observation
-                                            })
-                                        }}
-                                    >
-                                        <h4 style={{color: '#FFF'}} >
-                                            Nome: 
-                                            {
-                                                ' ' + passenger.name
-                                            } | Destino:
-                                            {
-                                                ' ' + passenger.destination
-                                            }
-                                        </h4>
-                                        {
-                                            passenger.companion === "true" ?
+                                    <ColumnDiv>
+                                        <div style={{width: '84%'}}>
+                                            <PassengerButton key={passenger.id} 
+                                                onClick={() => {
+                                                    setPassengerToRemove({
+                                                        id: passenger.id,
+                                                        name: passenger.name,
+                                                        cpf: passenger.cpf,
+                                                        companion: passenger.companion,
+                                                        destination: passenger.destination,
+                                                        observation: passenger.observation
+                                                    })
+                                                }}
+                                            >
                                                 <h4 style={{color: '#FFF'}} >
-                                                    CPF: 
+                                                    Nome: 
                                                     {
-                                                        ' ' + passenger.cpf
-                                                    } | Acompanhante: { ' ' }
-                                                    <MyFiCheck />
+                                                        ' ' + passenger.name
+                                                    }
                                                 </h4>
+                                                <h4 style={{color: '#FFF'}} >
+                                                    Destino:
+                                                    {
+                                                        ' ' + passenger.destination
+                                                    }
+                                                </h4>
+                                                {
+                                                    passenger.companion === "true" ?
+                                                        <ColumnDiv>
+                                                            <h4 style={{color: '#FFF'}} >
+                                                                CPF: 
+                                                                {
+                                                                    ' ' + passenger.cpf
+                                                                } 
+                                                            </h4>
+                                                            <h4 style={{color: '#FFF'}} >
+                                                                Acompanhante: { ' ' }
+                                                                <div style={{marginTop: '0.1rem'}}>
+                                                                    <MyFiCheck />
+                                                                </div>
+                                                            </h4>
+                                                        </ColumnDiv>
+                                                    :
+                                                        <ColumnDiv>
+                                                            <h4 style={{color: '#FFF'}} >
+                                                                CPF: 
+                                                                {
+                                                                    ' ' + passenger.cpf
+                                                                } 
+                                                            </h4>
+                                                            <h4 style={{color: '#FFF'}} >
+                                                                Acompanhante: { ' ' }
+                                                                <div style={{marginTop: '0.1rem'}}>
+                                                                    <MyFiX />
+                                                                </div>
+                                                            </h4>
+                                                        </ColumnDiv>
+                                                }
+                                                {
+                                                    passenger.observation === "" ?
+                                                        null
+                                                    :
+                                                        <h4 style={{color: '#FFF'}} >
+                                                            Observações: 
+                                                            {
+                                                                ' ' + passenger.observation
+                                                            } 
+                                                        </h4>
+                                                }
                                                 
-                                            :
-                                                <h4 style={{color: '#FFF'}} >
-                                                    CPF: 
-                                                    {
-                                                        ' ' + passenger.cpf
-                                                    } | Acompanhante: { ' ' }
-                                                    <MyFiX />
-                                                </h4>
-                                        }
-                                    </PassengerButton>
+                                            </PassengerButton>
+                                        </div>
+                                        <div style={{width: '16%'}}>
+                                            <PassengerButton 
+                                                style={{background: '#f74848'}}
+                                                onClick={() => removePassengerFromTravel({
+                                                    travel_id: travelId,
+                                                    passenger_id: passenger.id
+                                                })}
+                                            >
+                                                <MyFiUsersX />
+                                            </PassengerButton>
+                                        </div>
+                                    </ColumnDiv>
+                                    
                                     <Modal 
                                         isOpen={removePassengerModal !== undefined} 
                                         onRequestClose={() => setRemovePassengerModal(undefined)}
