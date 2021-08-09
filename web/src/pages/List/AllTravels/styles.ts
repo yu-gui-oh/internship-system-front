@@ -47,7 +47,7 @@ export const ColumnDiv = styled.div`
 
 export const FormContainer = styled.div`
     min-height: 20rem;
-    width: 60%;
+    width: 80%;
 
     border-radius: 1rem;
 
@@ -63,6 +63,7 @@ export const FormContainer = styled.div`
     padding-bottom: 2rem;
     margin: 0 auto;
     margin-bottom: 1rem;
+    margin-left: 20%;
 `;
 
 export const SearchContainer = styled.div`
@@ -83,6 +84,7 @@ export const SearchContainer = styled.div`
     padding-bottom: 0rem;
     margin: 0 auto;
     margin-bottom: 1rem;
+    margin-left: 40%;
 `;
 
 export const Title = styled.h1`

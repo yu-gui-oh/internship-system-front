@@ -37,6 +37,9 @@ import {
 interface ITravels {
     id: string;
     departure_date: string;
+    departure_hour: string;
+    return_date: string;
+    return_hour: string;
     destination: string;
     driver: string;
     vehicle: string;
@@ -63,6 +66,9 @@ const ListActiveTravels = () => {
                 const travels = response.data.map( ( travel: ITravels ) => ({
                     id: travel.id,
                     departure_date: travel.departure_date,
+                    departure_hour: travel.departure_hour,
+                    return_date: travel.return_date,
+                    return_hour: travel.return_hour,
                     destination: travel.destination,
                     driver: travel.driver,
                     vehicle: travel.vehicle,
@@ -97,6 +103,9 @@ const ListActiveTravels = () => {
             const travels = response.data.map( ( travel: ITravels ) => ({
                 id: travel.id,
                 departure_date: travel.departure_date,
+                departure_hour: travel.departure_hour,
+                return_date: travel.return_date,
+                return_hour: travel.return_hour,
                 destination: travel.destination,
                 driver: travel.driver,
                 vehicle: travel.vehicle,
@@ -165,7 +174,10 @@ const ListActiveTravels = () => {
                     <MyTable>
                         <TableHead>
                             <TableRow>
-                                <TableCell align="center" > Data da viagem </TableCell>
+                                <TableCell align="center" > Data de ida </TableCell>
+                                <TableCell align="center" > Hora de ida </TableCell>
+                                <TableCell align="center" > Data de volta </TableCell>
+                                <TableCell align="center" > Hora de volta </TableCell>
                                 <TableCell align="center" > Destino </TableCell>
                                 <TableCell align="center" > Motorista </TableCell>
                                 <TableCell align="center" > Veículo </TableCell>
@@ -179,6 +191,15 @@ const ListActiveTravels = () => {
                             <TableRow key={travel.id}>
                                 <TableCell align="center" >
                                     {new Date(travel.departure_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
+                                </TableCell>
+                                <TableCell align="center" >
+                                    {travel.departure_hour}
+                                </TableCell>
+                                <TableCell align="center" >
+                                    {new Date(travel.return_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
+                                </TableCell>
+                                <TableCell align="center" >
+                                    {travel.return_hour}
                                 </TableCell>
                                 <TableCell align="center" >
                                     {travel.destination}
