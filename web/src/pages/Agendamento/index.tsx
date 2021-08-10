@@ -222,6 +222,14 @@ const ListActiveTravels = () => {
         passengerSearchParams
     ]);
 
+    const setPassengerToRemoveId = React.useCallback( 
+        async (data: string) => {
+            removePassengerFromTravel({
+                travel_id: travelId,
+                passenger_id: data
+            })
+        },[travelId])
+
     const removePassengerFromTravel = React.useCallback(
         async (data: IRemovePassenger) => {
             try {
@@ -232,10 +240,10 @@ const ListActiveTravels = () => {
                     passenger_id: Yup.string().required(),
                 });
 
-                if ( passengerToRemove ) {
-                    data.travel_id = travelId;
-                    data.passenger_id = passengerToRemove.id;
-                }
+                // if ( passengerToRemove ) {
+                //     data.travel_id = travelId;
+                //     data.passenger_id = passengerToRemove.id;
+                // }
 
                 await schema.validate(data, {
                     abortEarly: false,
@@ -602,11 +610,11 @@ const ListActiveTravels = () => {
                                         <div style={{width: '16%'}}>
                                             <PassengerButton 
                                                 style={{background: '#f74848'}}
-                                                onClick={() => removePassengerFromTravel({
-                                                    travel_id: travelId,
-                                                    passenger_id: passenger.id
-                                                })}
-                                            >
+                                                // onClick={() => removePassengerFromTravel({
+                                                //     travel_id: travelId,
+                                                //     passenger_id: passenger.id
+                                                // })}
+                                                onClick={() => setPassengerToRemoveId(passenger.id)}                                            >
                                                 <MyFiUsersX />
                                             </PassengerButton>
                                         </div>
@@ -679,7 +687,7 @@ const ListActiveTravels = () => {
                                                             style={{background: '#f74848'}}
                                                             onClick={() => removePassengerFromTravel({
                                                                 travel_id: travelId,
-                                                                passenger_id: passenger.id
+                                                                passenger_id: String(passengerToRemove?.id)
                                                             })}
                                                         >
                                                             Remover da viagem
